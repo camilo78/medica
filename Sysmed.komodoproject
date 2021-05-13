@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="4bbc3f6c-f1b4-47da-9f94-c0400b393142" kpf_version="5" name="Sysmed.komodoproject">
+<preference-set idref="4bbc3f6c-f1b4-47da-9f94-c0400b393142" id="project" preftype="project">
+  <long id="codeintel.scanner.max_depth">10</long>
+  <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;.git;.hg;.bzr;*%25*;tmp*.html;.DS_Store;*.swp;*.kpf;*.komodoproject;.komodotools;__pycache__</string>
+  <long id="prefs_version">1</long>
+  <string id="userEnvironmentStartupOverride">PATH=/home/camilo/.cache/activestate/8bc4afa7/Tools/ninja:/home/camilo/.cache/activestate/8bc4afa7/Tools:/home/camilo/.cache/activestate/8bc4afa7/bin
+PYTHONIOENCODING=utf-8
+PYTHONPATH=/srv/http/sysmed.test
+</string>
+</preference-set>
+</project>

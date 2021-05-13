@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('css')
+@section('styles')
 
 @stop
 @section('js')

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('css')
+@section('styles')
 
 @stop
 @section('js')
@@ -16,9 +16,9 @@
                         if (res) {
                             $('#state').empty();
                             $('#city').empty();
-                            $('#state').append('<option>Select State</option>');
+                            $('#state').append('<option>Seleccione Departamento</option>');
                             $.each(res, function (key, value) {
-                                $('#state').append('<option value="' + key + '">' + value + '</option>');
+                                $('#state').append('<option value="' + key + '">' + value.replace('Department', '') + '</option>');
                             });
                         }
                     }
@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
-                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ route('users.index')}}"><i
+                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ URL::previous()}}"><i
                             class="mdi mdi-step-backward"></i> Atras</a>
                 </div>
             </div>

@@ -27,14 +27,18 @@ class CreateAdminUserSeeder extends Seeder
             'state_id' => 4047,
             'city_id' => 54048,
             'phone1' => rand(11111111, 99999999),
-        	'password' => bcrypt('milogaqw')
+        	'password' => bcrypt('milogaqw'),
         ]);
         $role = Role::create(['name' => 'Admin']);
-        Role::create(['name' => 'Medico']);
+        $medic = Role::create(['name' => 'Médico']);
         Role::create(['name' => 'Asitente']);
         Role::create(['name' => 'Paciente']);
         $permissions = Permission::pluck('id','id')->all();
+        $permissions_user = Permission::where('name', 'like', "%user-%")
+            ->orWhere('name', "setting-edit")
+            ->pluck('id','id')->all();
         $role->syncPermissions($permissions);
+        $medic->syncPermissions($permissions_user);
         $user->assignRole([$role->id]);
     }
 }

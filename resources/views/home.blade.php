@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('css')
+@section('styles')
 @stop
 @section('js')
     <script src="{{ asset('js/dashboard.js') }}"></script>
@@ -16,8 +16,8 @@
             <div class="d-flex justify-content-between flex-wrap">
                 <div class="d-flex align-items-end flex-wrap">
                     <div class="mr-md-3 mr-xl-5">
-                        <h2>{{__('Estadisticas')}}</h2>
-                        <p class="mb-md-0">{{__('Consult important information about your clinic')}}</p>
+                        <h2>{{__('Estadísticas')}}</h2>
+                        <p class="mb-md-0">{{__('Información importante sobre tu clínica')}}</p>
                     </div>
                     <div class="d-flex mb-sm-2 mb-md-0">
                         <p class="text-muted mb-0 hover-cursor"><i class="mdi mdi-home text-muted hover-cursor"></i>/&nbsp;</p>

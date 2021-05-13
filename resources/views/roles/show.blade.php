@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('css')
+@section('styles')
 
 @stop
 @section('js')
@@ -25,7 +25,7 @@
                         <a class="btn btn-info mr-3 mt-2 mt-xl-0" href="{{ route('roles.edit',$role->id) }}"> <i
                                 class="mdi mdi-account-edit"></i> Editar Rol</a>
                     @endcan
-                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ route('roles.index') }}"><i
+                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ URL::previous() }}"><i
                             class="mdi mdi-step-backward"></i> Atras</a>
                 </div>
             </div>

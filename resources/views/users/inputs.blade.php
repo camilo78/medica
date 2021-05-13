@@ -1,5 +1,5 @@
 <div class="row">
-<div class="col-xs-12 col-sm-4 col-md-3">
+    <div class="col-xs-12 col-sm-4 col-md-3">
         <div class="form-group">
             <label class="font-weight-medium">Primer Nombre:</label>
             {!! Form::text('name1', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
@@ -28,7 +28,7 @@
     </div>
     <div class="col-xs-12 col-sm-4 col-md-3">
         <div class="form-group">
-            <label class="font-weight-medium">Primer Apellido:</label>
+            <label class="font-weight-medium">Segundo Apellido:</label>
             {!! Form::text('surname2', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
             @if ($errors->has('surname2'))
                 <small class="text-danger">{{ $errors->first('surname2') }}</small>
@@ -77,7 +77,7 @@
                     data-live-search="true">
                 @foreach ($countries as $country)
                     <option
-                        value="{{$country->id}}" @if(isset($user->id)){{ $user->country['id'] === $country->id ? "selected='selected'" : ''}}@endif >
+                            value="{{$country->id}}" @if(isset($user->id)){{ $user->country['id'] === $country->id ? "selected='selected'" : ''}}@endif >
                         {{$country->name}}
                     </option>
                 @endforeach
@@ -95,7 +95,7 @@
                 @if(isset($user))
                     @foreach ($states as $state)
                         <option
-                            value="{{$state->id}}" {{ $user->state['id'] === $state->id ? "selected='selected'" : ''}} >
+                                value="{{$state->id}}" {{ $user->state['id'] === $state->id ? "selected='selected'" : ''}} >
                             {{ str_replace('Department','',$state->name)}}
                         </option>
                     @endforeach
@@ -113,23 +113,14 @@
                 @if(isset($user))
                     @foreach ($cities as $city)
                         <option
-                            value="{{$city->id}}" {{ $user->city['id'] === $city->id ? "selected='selected'" : ''}} >
-                            {{ str_replace('Department','',$city->name)}}
+                                value="{{$city->id}}" {{ $user->city['id'] === $city->id ? "selected='selected'" : ''}} >
+                            {{$city->name}}
                         </option>
                     @endforeach
                 @endif
             </select>
             @if ($errors->has('city_id'))
                 <small class="text-danger">{{ $errors->first('city_id') }}</small>
-            @endif
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-4 col-md-6">
-        <div class="form-group">
-            <label class="font-weight-medium">Dirección:</label>
-            {!! Form::textarea('address', null, array('placeholder' => 'Direccón','class' => 'form-control','rows'=>'1')) !!}
-            @if ($errors->has('address'))
-                <small class="text-danger">{{ $errors->first('address') }}</small>
             @endif
         </div>
     </div>
@@ -148,6 +139,15 @@
             {!! Form::password('confirm-password', array('placeholder' => 'Confirm Password','class' => 'form-control')) !!}
             @if ($errors->has('confirm-password'))
                 <small class="text-danger">{{ $errors->first('confirm-password') }}</small>
+            @endif
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-6">
+        <div class="form-group">
+            <label class="font-weight-medium">Dirección:</label>
+            {!! Form::textarea('address', null, array('placeholder' => 'Direccón','class' => 'form-control','rows'=>'2')) !!}
+            @if ($errors->has('address'))
+                <small class="text-danger">{{ $errors->first('address') }}</small>
             @endif
         </div>
     </div>

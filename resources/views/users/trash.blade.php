@@ -22,32 +22,10 @@
                 buttons: {
                     buttons: [
                         {
-                            extend: 'excelHtml5',
-                            text: '<i class="mdi mdi-file-excel"></i> Excel',
-                            className: ' btn-sm btn-inverse-success',
-                            filename: 'Sysmed Usuarios',
-                            exportOptions: {
-                                columns: [0,1, 2, 3,6,7]
-                            },
-                            messageTop: 'Usuarios registrados en el sistema al ' + f.getDate() + "/" + f.getMonth() + "/" + f.getFullYear(),
-                            messageBottom: '{{ env('APP_NAME') }} V {{ env('VERSION') }} {{ env('DESCRIPTION') }}'
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            text: '<i class="mdi mdi-file-pdf"></i> PDF',
-                            exportOptions: {
-                                columns: [0,1, 2, 3,6,7]
-                            },
-                            className: 'btn-sm btn-inverse-danger',
-                            filename: 'Sysmed Usuarios',
-                            messageTop: 'Usuarios registrados en el sistema al ' + f.getDate() + "/" + f.getMonth() + "/" + f.getFullYear(),
-                            messageBottom: '{{ env('APP_NAME') }} V {{ env('VERSION') }} {{ env('DESCRIPTION') }}',
-                        },
-                        {
-                            text: '<i class="mdi mdi-delete-variant"></i> Papelera',
-                            className: ' btn-sm btn-inverse-warning',
+                            text: '<i class="mdi mdi-account-group"></i> Regresar a Usuarios',
+                            className: ' btn-sm btn-inverse-info',
                             action: function ( e, dt, node, config ) {
-                                window.location.href = '{{route('users.trash')}}';
+                                window.location.href = '{{route('users.index')}}';
                             }
                         }
                     ],
@@ -57,23 +35,19 @@
                 stateSave: true,
                 serverSide: true,
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-
-                ajax: "{{ route('users.index') }}",
+                "columnDefs": [
+                    { className: "text-center", "targets": [ 5 ] }
+                ],
+                ajax: "{{ route('users.trash') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                     {data: 'name', name: 'name'},
                     {data: 'email', name: 'email'},
                     {data: 'phone', name: 'phone'},
                     {data: 'role', name: 'role'},
-                        @can('user-edit')
-                    {data: 'edit', name: 'edit', orderable: false, searchable: false},
-                        @endcan
-                        @can('user-delete')
+                        @can('user-restore')
                     {data: 'choose', name: 'choose', orderable: false, searchable: false},
                     @endcan
-                    {data: 'address', name: 'address'},
-
-
                 ],
             });
         });
@@ -99,32 +73,32 @@
             if (idsArr.length <= 0) {
                 Toast.fire({
                     icon: 'error',
-                    title: 'Debes selecionar uno o varios usuarios para elimiarlos'
+                    title: 'Debes selecionar uno o varios usuarios para restaurarlos'
                 })
             } else {
                 $.confirm({
                     title: '!Confirme esta acción!',
-                    content: 'Pulsa (Si) para eliminar el o los usuarios selecionados y (No) si no quieres completar esta acción',
-                    type: 'red',
+                    content: 'Pulsa (Si) para restaurar el o los usuarios selecionados y (No) si no quieres completar esta acción',
+                    type: 'orange',
                     icon: 'fas fa-fw fa-exclamation-circle',
                     theme: 'bootstrap',
                     backgroundDismiss: 'no',
                     escapeKey: 'no',
                     buttons: {
                         si: {
-                            btnClass: 'btn-red',
+                            btnClass: 'btn-warning',
                             action: function () {
                                 var strIds = idsArr.join(",");
                                 $.ajax({
-                                    url: "{{ route('users.destroy') }}",
+                                    url: "{{ route('users.restore') }}",
                                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                                    type: 'DELETE',
+                                    type: 'POST',
                                     data: 'ids=' + strIds,
                                     success: function (data) {
                                         $('#data').DataTable().ajax.reload(null, false);
                                         Toast.fire({
                                             icon: 'success',
-                                            title: 'Usuarios Eliminados'
+                                            title: 'Usuarios Restaurados'
                                         })
                                     },
                                     error: function (data) {
@@ -151,18 +125,20 @@
             <div class="d-flex justify-content-between flex-wrap">
                 <div class="d-flex align-items-end flex-wrap">
                     <div class="mr-md-3 mr-xl-5 mr-4">
-                        <h2>{{__('Usuarios')}}</h2>
-                        <p class="mb-md-0">{{__('Cree, elimine y actualice usuarios')}}</p>
+                        <h2>{{__('Usuarios Eliminados')}}</h2>
+                        <p class="mb-md-0">{{__('Seleccione y restaure usuarios eleminados')}}</p>
                     </div>
                     <div class="d-flex mb-sm-2 mb-md-0">
                         <a href="{{route('home')}}"><i class="mdi mdi-home hover-cursor"></i>&nbsp;/</a>
-                        <p class="text-muted mb-0 hover-cursor">&nbsp;Usuarios&nbsp;/</p>
+                        <a href="{{route('users.index')}}">&nbsp;Usuarios&nbsp;/&nbsp;</a>
+                        <p class="text-muted mb-0 hover-cursor"> Papelera</p>
+
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
-                    @can('user-delete')
-                        <button type="button" id="delete" class="btn btn-danger btn-icon mr-3 mt-2 mt-xl-0">
-                            <i class="mdi mdi-delete-outline"></i><span style="font-size: 9px">Eliminar</span>
+                    @can('user-restore')
+                        <button type="button" id="delete" class="btn btn-warning btn-icon mr-3 mt-2 mt-xl-0 ">
+                            <i class="mdi mdi-delete-restore"></i><span style="font-size: 8px">Restaurar</span>
                         </button>
                     @endcan
                     @can('user-create')
@@ -189,14 +165,9 @@
                                 <th width="50px">Email</th>
                                 <th width="50px">Teléfono</th>
                                 <th width="50px">Rol</th>
-                                @can('user-edit')
-                                    <th class="text-center" width="50px">Editar</th>
+                                @can('user-restore')
+                                    <th class="text-center" width="50px"><i class="mdi mdi-checkbox-marked-outline"></i></th>
                                 @endcan
-                                @can('user-delete')
-                                <th class="text-center" width="50px"><i class="mdi mdi-checkbox-marked-outline"></i></th>
-                                @endcan
-
-                                <th width="50px">Dirección</th>
                             </tr>
                             </thead>
                             <tbody>

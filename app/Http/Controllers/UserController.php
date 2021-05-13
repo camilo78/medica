@@ -15,6 +15,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Contracts\DataTable;
+use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
@@ -29,6 +30,7 @@ class UserController extends Controller
         $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:user-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:user-restore', ['only' => ['restore']]);
     }
 
     /**
@@ -38,9 +40,16 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
+        $role = Auth::user()->getRoleNames()->first();
+        $setting = Auth::User()->setting_id;
 
-            return datatables(User::with('roles')->get())->addIndexColumn()
+        if ($request->ajax()) {
+            if ($role == 'Médico'){
+                $table = datatables(User::with('roles')->where( 'setting_id', $setting)->get());
+            }else{
+                $table = datatables(User::with('roles')->get());
+            }
+            return $table->addIndexColumn()
                 ->addColumn('role', function (User $user) {
                     return $user->getRoleNames()->first();
                 })
@@ -70,6 +79,41 @@ class UserController extends Controller
         return view('users.index');
     }
 
+    public function trash(Request $request)
+    {
+        $role = Auth::user()->getRoleNames()->first();
+        $setting = Auth::User()->setting_id;
+        if ($request->ajax()) {
+            if ($role == 'Médico'){
+                $table = datatables(User::onlyTrashed()->where( 'setting_id', $setting)->get());
+            }else{
+                $table = datatables(User::onlyTrashed()->get());
+            }
+            return $table->addIndexColumn()
+                ->addColumn('role', function (User $user) {
+                    return $user->getRoleNames()->first();
+                })
+                ->addColumn('name', function (User $user) {
+                    return  $user->name1 . ' ' . $user->name2 . ' ' . $user->surname1 . ' ' . $user->surname2;
+                })
+                ->addColumn('email', function (User $user) {
+                    return '<a href="mailto:' . $user->email . '"  data-toggle="tooltip" title="Haz click para enviar un correo a este usuario">' . $user->email . '</a>';
+                })
+                ->addColumn('phone', function (User $user) {
+                    return '<a href="tel:' . $user->phone1 . '"  data-toggle="tooltip" title="Haz click para hacer una llamada a este número">' . $user->phone1 . '</a>';
+                })
+                ->addColumn('choose', function (User $user) {
+                    Auth::id() == $user->id ? $status = 'disabled' : $status = '';
+                    return '<input class="col align-self-center checkbox" ' . $status . ' type="checkbox"  name="inputs[]" value="' . $user->id . '" aria-label="Checkbox for following text input" data-toggle="tooltip" title="Selecciona para eliminar este usuario">';
+                })
+                ->rawColumns(['role', 'name', 'email', 'phone','choose'])
+                ->make(true);
+        }
+
+        return view('users.trash');
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -77,7 +121,22 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::pluck('name', 'name')->all();
+        $role = Auth::user()->getRoleNames()->first();
+        $setting = Auth::User()->setting_id;
+        $count_asistent = User::whereHas('roles', function ($q) {
+            $q->where('id', '3');
+        })->where( 'setting_id', $setting)->get()->count();
+
+        if ($role == 'Médico'){
+            if($count_asistent < 2){
+                $roles = Role::where('id','>',2)->pluck('name', 'name')->all();
+            }else{
+                $roles = Role::where('id','>',3)->pluck('name', 'name')->all();
+            }
+        }else{
+            $roles = Role::pluck('name', 'name')->all();
+        }
+
         $countries= DB::table("countries")->get();
         return view('users.create', compact('roles','countries'));
     }
@@ -99,6 +158,14 @@ class UserController extends Controller
             'password' => 'required|same:confirm-password',
             'roles' => 'required'
         ]);
+
+        if ($request->roles[0] == 'Paciente'){
+            $request['patient'] = true;
+        }else{
+            $request['patient'] = false;
+        }
+        $request['setting_id'] = Auth::User()->setting_id;
+
 
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
@@ -147,7 +214,8 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        return view('users.show', compact('user'));
+        $activities = Activity::where('causer_id', $id)->orderBy('id','DESC')->get();
+        return view('users.show', compact('user','activities'));
     }
 
     /**
@@ -159,7 +227,21 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-        $roles = Role::pluck('name', 'name')->all();
+        $role = Auth::user()->getRoleNames()->first();
+        $setting = Auth::User()->setting_id;
+        $count_asistent = User::whereHas('roles', function ($q) {
+            $q->where('id', '3');
+        })->where( 'setting_id', $setting)->get()->count();
+
+        if ($role == 'Médico'){
+            if($count_asistent < 2){
+                $roles = Role::where('id','>',2)->pluck('name', 'name')->all();
+            }else{
+                $roles = Role::where('id','>',3)->pluck('name', 'name')->all();
+            }
+        }else{
+            $roles = Role::pluck('name', 'name')->all();
+        }
         $userRole = $user->roles->pluck('name', 'name')->all();
         $countries= DB::table("countries")->get();
         $states= DB::table("states")->where('country_id','=',$user->country['id'])->get();
@@ -183,8 +265,15 @@ class UserController extends Controller
             'address' => 'required',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'required',
+            'avatar'   =>  'mimes:jpg,jpeg,gif,png,webp'
         ]);
+
+        if ($request->roles[0] == 'Paciente'){
+            $request['patient'] = true;
+        }else{
+            $request['patient'] = false;
+        }
 
         $input = $request->all();
         if (!empty($input['password'])) {
@@ -192,14 +281,14 @@ class UserController extends Controller
         } else {
             $input = Arr::except($input, array('password'));
         }
-//dd($input);
+
         $user = User::find($id);
         $user->update($input);
         DB::table('model_has_roles')->where('model_id', $id)->delete();
 
         $user->assignRole($request->input('roles'));
         Alert::toast('Datos actualizados', 'success')->timerProgressBar();
-        return redirect()->route('users.edit', $id);
+        return redirect()->route('users.index');
     }
 
     /**
@@ -212,15 +301,34 @@ class UserController extends Controller
     {
         $ids = $request->ids;
 
-        User::whereIn('id', explode(",", $ids))->delete();
-        return response()->json(['status' => true, 'message' => "Category deleted successfully."]);
+        $user = User::whereIn('id', explode(",", $ids));
+        $user->delete();
+
+        return response()->json();
+
+    }
+
+    public function restore(Request $request)
+    {
+        $ids = $request->ids;
+
+        $user = User::whereIn('id', explode(",", $ids));
+        $user->restore();
+
+        return response()->json();
 
     }
 
     public function search(Request $request)
     {
-
-        $users = User::like($request->get('searchQuest'))->get();
+        $role = Auth::user()->getRoleNames()->first();
+        $setting = Auth::User()->setting_id;
+        if ($role == 'Médico'){
+            $user = User::where( 'setting_id', $setting);
+        }else{
+            $user = User::select( '*');
+        }
+        $users = $user->like($request->get('searchQuest'))->get();
         return json_encode($users);
     }
 

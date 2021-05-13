@@ -23,15 +23,18 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone1', 25)->nullable();
             $table->text('address')->nullable();
+            $table->string('password');
             $table->unsignedMediumInteger('country_id');
             $table->foreign('country_id')->references('id')->on('countries');
             $table->unsignedMediumInteger('state_id');
             $table->foreign('state_id')->references('id')->on('states');
             $table->unsignedMediumInteger('city_id');
             $table->foreign('city_id')->references('id')->on('cities');
+            $table->unsignedBigInteger('setting_id')->nullable();
+            $table->foreign('setting_id')->references('id')->on('settings');
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

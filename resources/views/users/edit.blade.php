@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('css')
+@section('styles')
     <style>
 
         .btn-primary_upload {
@@ -129,7 +129,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
-                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ route('users.show',$user->id) }}"><i
+                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ URL::previous()}}"><i
                             class="mdi mdi-step-backward"></i> Atras</a>
                 </div>
             </div>
@@ -162,7 +162,7 @@
                                 box-shadow: 0px -3px 6px 2px rgba(0, 0, 0, 0.2);
                                 "></div>
                             <label class="btn btn-primary btn-primary_upload">
-                                Upload<input type="file" name="avatar" class="uploadFile img" value="Upload Photo"
+                                Buscar Imagen<input type="file" name="avatar" class="uploadFile img" value="Upload Photo"
                                              style="width: 0px;height: 0px;overflow: hidden;">
                             </label>
 

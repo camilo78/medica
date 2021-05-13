@@ -80,7 +80,7 @@
             transform: rotate(0deg);
         }
     </style>
-    @yield('css')
+    @yield('styles')
 </head>
 <body>
 <div id="app" class="container-scroller">

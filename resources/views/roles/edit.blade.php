@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('css')
+@section('styles')
 
 @stop
 @section('js')
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
-                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ route('roles.show',$role->id) }}"><i
+                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ URL::previous() }}"><i
                             class="mdi mdi-step-backward"></i> Atras</a>
                 </div>
             </div>

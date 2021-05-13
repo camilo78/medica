@@ -142,7 +142,7 @@ class RoleController extends Controller
 
         $role->syncPermissions($request->input('permission'));
         Alert::toast('Datos actualizados', 'success')->timerProgressBar();
-        return redirect()->route('roles.edit', $id);
+        return redirect()->route('roles.index');
     }
 
     /**

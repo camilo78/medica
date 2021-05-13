@@ -1,9 +1,32 @@
 @extends('layouts.app')
-@section('css')
-
+@section('styles')
+<style>
+    table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control:before{
+        margin-top: 10px !important;
+    }
+</style>
 @stop
 @section('js')
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.24/b-1.7.0/b-html5-1.7.0/r-2.2.7/datatables.min.js"></script>
 
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#logs').DataTable( {
+
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+                },
+                responsive:true,
+                searching: false,
+                ordering: false,
+                paginate: false,
+                info: false,
+
+            } );
+        } );
+    </script>
 @stop
 @section('title')
     <div class="row">
@@ -25,7 +48,7 @@
                         <a class="btn btn-info mr-3 mt-2 mt-xl-0" href="{{ route('users.edit',$user->id) }}"> <i
                                 class="mdi mdi-account-edit"></i> Editar Usuario</a>
                     @endcan
-                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ route('users.index') }}"><i
+                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{ URL::previous() }}"><i
                             class="mdi mdi-step-backward"></i> Atras</a>
                 </div>
             </div>
@@ -42,7 +65,8 @@
                             <!-- Personal-Information -->
                             <div class="card-box">
                                 <h4 class="header-title mt-0">Información Personal</h4>
-                                <img class="img-thumbnail img-fluid" src="@if(Auth::user()->avatar == null)
+                                <img class="img-thumbnail img-fluid" src="
+                                @if($user->avatar == null)
                                 {{asset('images/sin_imagen.jpg')}}
                                 @else
                                 {{asset('storage/'.$user->avatar)}}
@@ -71,70 +95,46 @@
 
                         </div>
                         <div class="col-xl-8">
-                            <div class="card-box">
-                                <h4 class="header-title mb-3">Ultimas Actividades</h4>
-                                <hr>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Project Name</th>
-                                            <th>Start Date</th>
-                                            <th>Due Date</th>
-                                            <th>Status</th>
-                                            <th>Assign</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Adminox Admin</td>
-                                            <td>01/01/2015</td>
-                                            <td>07/05/2015</td>
-                                            <td><span class="label label-info">Work in Progress</span></td>
-                                            <td>Coderthemes</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Adminox Frontend</td>
-                                            <td>01/01/2015</td>
-                                            <td>07/05/2015</td>
-                                            <td><span class="label label-success">Pending</span></td>
-                                            <td>Coderthemes</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Adminox Admin</td>
-                                            <td>01/01/2015</td>
-                                            <td>07/05/2015</td>
-                                            <td><span class="label label-pink">Done</span></td>
-                                            <td>Coderthemes</td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>Adminox Frontend</td>
-                                            <td>01/01/2015</td>
-                                            <td>07/05/2015</td>
-                                            <td><span class="label label-purple">Work in Progress</span></td>
-                                            <td>Coderthemes</td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>Adminox Admin</td>
-                                            <td>01/01/2015</td>
-                                            <td>07/05/2015</td>
-                                            <td><span class="label label-warning">Coming soon</span></td>
-                                            <td>Coderthemes</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            <h4 class="header-title mb-3 w-auto">Ultimas Actividades</h4>
+                            <table class="table table-striped table-bordered table-sm" id="logs" width="100%">
+                                <thead>
+                                <tr >
+                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">#</th>
+                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Descripción</th>
+                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Sujeto Tipo</th>
+                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Id <br> Sujeto</th>
+                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Causante Tipo</th>
+                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Id <br> Causante</th>
+                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Fecha</th>
+                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Propiedades</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($activities as $activity)
+                                    <tr>
+                                        <td style="font-size: 12px">{{$activity->id}}</td>
+                                        <td style="font-size: 12px">{{$activity->description}}</td>
+                                        <td style="font-size: 12px">{{$activity->subject_type}}</td>
+                                        <td style="font-size: 12px">{{$activity->subject_id}}</td>
+                                        <td style="font-size: 12px">{{$activity->causer_type}}</td>
+                                        <td style="font-size: 12px">{{$activity->causer_id}}</td>
+                                        <td style="font-size: 12px">{{$activity->created_at}}</td>
+                                        <td style="font-size: 12px" ><br>
+                                            @foreach($activity->properties as $key => $values)
+                                                <b>{{$key}}</b><br>
+                                                @foreach($values as $k => $value)
+                                                    {{$k .' = '.$value}}<br>
+                                                @endforeach
+                                                    <hr>
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
                         <!-- end col -->
                     </div>
-
                 </div>
             </div>
         </div>

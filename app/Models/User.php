@@ -11,10 +11,13 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\City;
 use App\Models\State;
 use App\Models\Country;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles,HasImageUploads;
+    use HasFactory, Notifiable, HasRoles, HasImageUploads, LogsActivity,SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -34,7 +37,11 @@ class User extends Authenticatable
         'city_id',
         'email',
         'password',
+        'setting_id',
     ];
+
+    protected $dates = ['deleted_at'];
+
     protected static $imageFields = [
         'avatar' => [
             'placeholder' => 'https://api.adorable.io/avatars/160',
@@ -44,6 +51,24 @@ class User extends Authenticatable
             'crop' => true
         ]
     ];
+
+    protected static $logAttributes = [
+        'name1',
+        'name2',
+        'surname1',
+        'surname2',
+        'avatar',
+        'phone1',
+        'address',
+        'country_id',
+        'state_id',
+        'city_id',
+        'email',
+    ];
+    protected static $logName = 'user';
+    protected static $logOnlyDirty = true;
+    protected static $recordEvents = ['deleted','created','updated'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
