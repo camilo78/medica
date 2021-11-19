@@ -146,6 +146,21 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name1' => 'Primer Nombre',
+        'name2' => 'Segundo Nombre',
+        'surname1' => 'Primer Apellido',
+        'surname2' => 'Segundo Apellido',
+        'avatar' => 'Imagen',
+        'email' => 'Email',
+        'phone1' => 'Teléfono',
+        'address' => 'Dirección',
+        'password' => 'Password',
+        'country_id' => 'País',
+        'state_id' => 'Departamento',
+        'city_id' => 'Ciudad',
+        'confirm-password' => 'Confirme Clave',
+        'password' => 'Clave'
+    ],
 
 ];

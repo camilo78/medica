@@ -22,11 +22,9 @@
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
                     @can('user-edit')
-                        <a class="btn btn-info mr-3 mt-2 mt-xl-0" href="{{route('settings.update', $setting->id)}}"> <i
-                                    class="mdi mdi-account-edit"></i> Editar Clínica</a>
+                        <a class="btn btn-info mr-3 mt-2 mt-xl-0" href="{{route('settings.edit', $setting->id)}}"> <i class="mdi mdi-account-edit"></i> Editar Clínica</a>
                     @endcan
-                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{URL::previous()}}"><i
-                                class="mdi mdi-step-backward"></i> Atras</a>
+                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{URL::previous()}}"><i class="mdi mdi-step-backward"></i> Atras</a>
                 </div>
             </div>
         </div>
@@ -40,11 +38,11 @@
                     <div class="row">
                         <div class="col-lg-3 imgUp">
                             <img class="img-thumbnail img-fluid" src="
-                                @if($setting->image == null)
-                            {{asset('images/sin_imagen.jpg')}}
-                            @else
-                            {{asset('storage/'.$setting->image)}}
-                            @endif" alt="profile"/>
+                                @if($setting->avatar == null)
+                                {{asset('images/sin_imagen.jpg')}}
+                                @else
+                                {{asset('storage/'.$setting->avatar)}}
+                                @endif" alt="profile"/>
                         </div>
                         <div class="col-lg-9">
                             <div class="row">

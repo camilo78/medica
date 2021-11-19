@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\edit;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,5 +46,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('settings', SettingController::class, ['except' => ['destroy']]);
     // Rutas Pacientes
     Route::get('/patient', [PatientController::class, 'patient'])->name('patient.dashboard');
+    // Rutas Ajustes
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
 
+    Route::post('settings/create', [SettingController::class, 'create'])->name('settings.create');
+
+    Route::put('settings/{setting}', [SettingController::class, 'update'])->name('settings.update');
+
+    Route::get('settings/{setting}/edit', [SettingController::class, 'edit'])->name('settings.edit');
+
+    Route::post('settings/store', [SettingController::class, 'store'])->name('settings.store');
+
+    Route::delete('settings/{setting}', [SettingController::class, 'destroy'])->name('settings.destroy');
 });

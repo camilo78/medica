@@ -16,8 +16,8 @@
         @if(Auth::user()->getRoleNames()->first() == 'Admin' or Auth::user()->getRoleNames()->first() == 'Médico')
         <li class="nav-item">
             <a class="nav-link" href="{{route('home')}}">
-                <i class="mdi mdi-home menu-icon"></i>
-                <span class="menu-title">Estadísticas</span>
+                <i class="mdi mdi-chart-bar menu-icon"></i>
+                <span class="menu-title">{{ __("Statistics") }}</span>
             </a>
         </li>
         @endif
@@ -25,28 +25,32 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
                     <i class="mdi mdi-account menu-icon"></i>
-                    <span class="menu-title">{{__('Modulo de Usuarios')}}</span>
+                    <span class="menu-title">{{__('Users')}}</span>
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="auth">
                     <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}"> {{__('Admin. Usuarios')}} </a>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}"> {{__('Usuarios')}} </a>
                             </li>
                         @can('role-list')
-                            <li class="nav-item"><a class="nav-link" href="{{ route('roles.index') }}"> {{__('Admin. Roles')}} </a>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('roles.index') }}"> {{__('Roles')}} </a>
                             </li>
                         @endcan
                     </ul>
                 </div>
             </li>
         @endcan
-        @if(Auth::user()->getRoleNames()->first() == 'Médico')
+        @role('Médico')
+
             <li class="nav-item">
                 <a class="nav-link" href="{{route('settings.index')}}">
                     <i class="mdi mdi-hospital-building menu-icon"></i>
-                    <span class="menu-title">Clínica</span>
+                    <span class="menu-title">{{ __("Clinic") }}</span>
+                    @if(Auth::User()->setting_id == null)
+                        <span class="badge bg-Warning">Completar</span>
+                    @endif
                 </a>
             </li>
-        @endif
+        @endrole
     </ul>
 </nav>

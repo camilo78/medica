@@ -66,11 +66,15 @@
                     {data: 'phone', name: 'phone'},
                     {data: 'role', name: 'role'},
                         @can('user-edit')
-                    {data: 'edit', name: 'edit', orderable: false, searchable: false},
+                            {data: 'edit', name: 'edit', orderable: false, searchable: false},
                         @endcan
+                        @role('Admin')
+                            {data: 'setting', name: 'setting'},
+                        @endrole
                         @can('user-delete')
-                    {data: 'choose', name: 'choose', orderable: false, searchable: false},
-                    @endcan
+                            {data: 'choose', name: 'choose', orderable: false, searchable: false},
+                        @endcan
+
                     {data: 'address', name: 'address'},
 
 
@@ -91,6 +95,13 @@
             }
         })
         // Delete record
+
+        $(".deleteRecord").click(function(){
+
+            alert('sdfas')
+
+
+        });
 
         $('#delete').on('click', function (e) {
             var idsArr = $('[name="inputs[]"]:checked').map(function () {
@@ -192,6 +203,9 @@
                                 @can('user-edit')
                                     <th class="text-center" width="50px">Editar</th>
                                 @endcan
+                                @role('Admin')
+                                <th width="50px">Clínica</th>
+                                @endrole
                                 @can('user-delete')
                                 <th class="text-center" width="50px"><i class="mdi mdi-checkbox-marked-outline"></i></th>
                                 @endcan

@@ -140,9 +140,15 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                     <a class="dropdown-item" href="{{ route('users.edit',Auth::user()->id ) }}">
+                        <i class="mdi mdi-account-edit text-primary"></i>
+                        {{ __('Profile') }}
+                    </a>
+                    @role('Médico')
+                    <a class="dropdown-item" href="{{ Route('settings.index') }}">
                         <i class="mdi mdi-settings text-primary"></i>
                         {{ __('Settings') }}
                     </a>
+                    @endrole
                     <a class="dropdown-item" href="{{ route('logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="mdi mdi-logout text-primary"></i>

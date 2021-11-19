@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\City;
 use App\Models\State;
 use App\Models\Country;
+use App\Models\Setting;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -44,15 +45,14 @@ class User extends Authenticatable
 
     protected static $imageFields = [
         'avatar' => [
-            'placeholder' => 'https://api.adorable.io/avatars/160',
             'width' => 260,
             'height' => 260,
             'resize_image_quality' => 100,
             'crop' => true
         ]
     ];
-
     protected static $logAttributes = [
+        'id',
         'name1',
         'name2',
         'surname1',
@@ -64,10 +64,17 @@ class User extends Authenticatable
         'state_id',
         'city_id',
         'email',
+        'password',
+        'setting_id',
     ];
     protected static $logName = 'user';
     protected static $logOnlyDirty = true;
-    protected static $recordEvents = ['deleted','created','updated'];
+    protected static $recordEvents = [
+            'restored',
+            'created',
+            'updated',
+            'deleted',
+        ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -92,6 +99,10 @@ class User extends Authenticatable
     public function state()
     {
         return $this->belongsTo(State::class);
+    }
+    public function setting()
+    {
+        return $this->belongsTo(Setting::class);
     }
     /**
      * The attributes that should be cast to native types.

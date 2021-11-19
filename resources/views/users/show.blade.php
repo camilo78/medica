@@ -4,6 +4,12 @@
     table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control:before{
         margin-top: 10px !important;
     }
+    table{
+        font-size: 12px;
+    }
+    th{
+        vertical-align: middle; text-align: center;
+    }
 </style>
 @stop
 @section('js')
@@ -19,7 +25,7 @@
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
                 },
                 responsive:true,
-                searching: false,
+                searching:  false,
                 ordering: false,
                 paginate: false,
                 info: false,
@@ -98,40 +104,48 @@
                             <h4 class="header-title mb-3 w-auto">Ultimas Actividades</h4>
                             <table class="table table-striped table-bordered table-sm" id="logs" width="100%">
                                 <thead>
-                                <tr >
-                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">#</th>
-                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Descripción</th>
-                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Sujeto Tipo</th>
-                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Id <br> Sujeto</th>
-                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Causante Tipo</th>
-                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Id <br> Causante</th>
-                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Fecha</th>
-                                    <th style="font-size: 12px; vertical-align: middle;text-align: center">Propiedades</th>
+                                <tr>
+                                    <th>Acción</th>
+                                    <th>Sujeto</th>
+                                    <th>Fecha</th>
+                                    <th class="none">Propiedades</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($activities as $activity)
                                     <tr>
-                                        <td style="font-size: 12px">{{$activity->id}}</td>
-                                        <td style="font-size: 12px">{{$activity->description}}</td>
-                                        <td style="font-size: 12px">{{$activity->subject_type}}</td>
-                                        <td style="font-size: 12px">{{$activity->subject_id}}</td>
-                                        <td style="font-size: 12px">{{$activity->causer_type}}</td>
-                                        <td style="font-size: 12px">{{$activity->causer_id}}</td>
-                                        <td style="font-size: 12px">{{$activity->created_at}}</td>
-                                        <td style="font-size: 12px" ><br>
+                                        <td>{{__($activity->description)}}</td>
+                                           <td>
+                                            @if($activity->subject_id ==! null)
+                                            <a href="{{route('users.show',$activity->subject_id)}}">{{$users->where('id' , $activity->subject_id)->first()->name1.' '.$users->where('id' , $activity->subject_id)->first()->surname1}}
+                                            </a>
+                                            @endif
+                                        </td>
+                                        <td>{{ucfirst($activity->created_at->locale('es')->isoFormat('ddd D \d\e MMM  \a \l\a\s  H:m')) }}</td>
+                                        <td>
+                                            <br>
+
                                             @foreach($activity->properties as $key => $values)
                                                 <b>{{$key}}</b><br>
                                                 @foreach($values as $k => $value)
-                                                    {{$k .' = '.$value}}<br>
+                                                    {{__($k) .' = '.$value}}<br>
                                                 @endforeach
                                                     <hr>
                                             @endforeach
+
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
+                            <div class="row">
+                            <div class="col-xl-4 small">
+                                Mostrando registros del {{$activities->firstItem()}} al {{$activities->lastItem()}} de un total de {{ $activities->total()}} registros
+                            </div>
+                            <div class="col-xl-8 d-flex justify-content-end">
+                                {{ $activities->onEachSide(1)->links() }}
+                            </div>
+                            </div>
                         </div>
                         <!-- end col -->
                     </div>

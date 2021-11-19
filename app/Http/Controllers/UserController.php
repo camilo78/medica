@@ -45,7 +45,12 @@ class UserController extends Controller
 
         if ($request->ajax()) {
             if ($role == 'Médico'){
-                $table = datatables(User::with('roles')->where( 'setting_id', $setting)->get());
+                if(Auth::User()->setting_id == null){
+                    $table = datatables(User::with('roles')->where( 'setting_id', $setting)->where( 'id', Auth::User()->id)->get());
+                }else{
+                    $table = datatables(User::with('roles')->where( 'setting_id', $setting)->get());
+                }
+
             }else{
                 $table = datatables(User::with('roles')->get());
             }
@@ -72,7 +77,10 @@ class UserController extends Controller
                 ->addColumn('address', function (User $user) {
                     return $user->address.', '.$user->city['name'].' '.str_replace('Department','',$user->state['name']).', '.$user->country['name'];
                 })
-                ->rawColumns(['role', 'name', 'email', 'phone', 'choose','edit','address'])
+                ->addColumn('setting', function (User $user) {
+                    return  ($user->setting_id  == '') ? 'Sin Clínica' : $user->setting['name'];
+                })
+                ->rawColumns(['role', 'name', 'email', 'phone', 'choose','edit','address','setting'])
                 ->make(true);
         }
 
@@ -148,7 +156,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {dd($request);
         $this->validate($request, [
             'name1' => 'required',
             'surname1' => 'required',
@@ -156,7 +164,11 @@ class UserController extends Controller
             'address' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'required',
+            'country_id'=> 'required',
+            'state_id'=> 'required',
+            'city_id'=> 'required',
+            'avatar' => 'mimes:jpg,jpeg,gif,png,webp'
         ]);
 
         if ($request->roles[0] == 'Paciente'){
@@ -177,34 +189,6 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
-    public function fileupload(Request $request, User $user)
-    {
-
-        if ($request->hasFile('file')) {
-
-            // Upload path
-            $destinationPath = 'files/';
-
-            // Get file extension
-            $extension = $request->file('file')->getClientOriginalExtension();
-
-            // Valid extensions
-            $validextensions = array("jpeg", "jpg", "png", "pdf");
-
-            // Name of User
-
-            // Check extension
-            if (in_array(strtolower($extension), $validextensions)) {
-
-                // Rename file
-                $fileName = $request->file('file')->getClientOriginalName() . time() . '.' . $extension;
-                // Uploading file to given path
-                $request->file('file')->move($destinationPath, $fileName);
-
-            }
-
-        }
-    }
     /**
      * Display the specified resource.
      *
@@ -214,8 +198,13 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $activities = Activity::where('causer_id', $id)->orderBy('id','DESC')->get();
-        return view('users.show', compact('user','activities'));
+        $users = User::withTrashed()->get();
+        $activities = Activity::where('causer_id', $id)->orderBy('id','DESC')->paginate('5');
+        if(Auth::User()->setting_id == $user->setting_id){
+            return view('users.show', compact('user','activities','users'));
+        }else{
+            return abort(403,"El usuario no puede realizar esta acción");
+        }
     }
 
     /**
@@ -246,7 +235,11 @@ class UserController extends Controller
         $countries= DB::table("countries")->get();
         $states= DB::table("states")->where('country_id','=',$user->country['id'])->get();
         $cities= DB::table("cities")->where('state_id','=',$user->state['id'])->get();
-        return view('users.edit', compact('user', 'roles', 'userRole','countries','states','cities'));
+        if(Auth::User()->setting_id == $user->setting_id){
+            return view('users.edit', compact('user', 'roles', 'userRole','countries','states','cities'));
+        }else{
+            return abort(403,"El usuario no puede realizar esta acción");
+        }
     }
 
     /**
@@ -299,24 +292,33 @@ class UserController extends Controller
      */
     public function destroy(Request $request)
     {
-        $ids = $request->ids;
-
-        $user = User::whereIn('id', explode(",", $ids));
-        $user->delete();
-
+        $ids = explode(",", $request->ids);
+        if (is_array($ids))
+        {
+            User::destroy($ids);
+        }
+        else
+        {
+            User::findOrFail($ids)->delete();
+        }
         return response()->json();
-
     }
 
-    public function restore(Request $request)
+    public function restore(Request $request, User $user)
     {
-        $ids = $request->ids;
+       $ids = explode(",", $request->ids);
 
-        $user = User::whereIn('id', explode(",", $ids));
-        $user->restore();
-
+            $u = $user->get()->last();
+            $properties = json_decode('{"attributes":'. $u .'}');
+            foreach ($ids as &$id) {
+                User::withTrashed()->where('id', $id)->restore();
+                activity('user')
+                   ->causedBy(auth()->user())
+                   ->performedOn($user)
+                   ->withProperties($properties)
+                   ->log('Restaurado '.$u->name1.' '.$u->surname1);
+            }
         return response()->json();
-
     }
 
     public function search(Request $request)
