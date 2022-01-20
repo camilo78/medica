@@ -153,14 +153,16 @@ return [
         'surname2' => 'Segundo Apellido',
         'avatar' => 'Imagen',
         'email' => 'Email',
-        'phone1' => 'Teléfono',
+        'phone1' => 'Teléfono 1',
         'address' => 'Dirección',
         'password' => 'Password',
         'country_id' => 'País',
         'state_id' => 'Departamento',
         'city_id' => 'Ciudad',
         'confirm-password' => 'Confirme Clave',
-        'password' => 'Clave'
+        'password' => 'Clave',
+        'gender' => 'Sexo',
+        'civil' => 'Estado Civil'
     ],
 
 ];

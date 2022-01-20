@@ -19,11 +19,11 @@ class SettingController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:user-list', ['only' => ['index']]);
-        $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:user-delete', ['only' => ['destroy']]);
-        $this->middleware('permission:user-restore', ['only' => ['restore']]);
+        $this->middleware('permission:setting-list', ['only' => ['index']]);
+        $this->middleware('permission:setting-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:setting-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:setting-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:setting-restore', ['only' => ['restore']]);
     }
     /**
      * Display a listing of the resource.
@@ -65,7 +65,6 @@ class SettingController extends Controller
             'name' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'web' => 'required',
             'avatar' => 'mimes:jpg,jpeg,gif,png,webp'
         ]);
 
@@ -122,7 +121,6 @@ class SettingController extends Controller
             'name' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'web' => 'required',
             'avatar' => 'mimes:jpg,jpeg,gif,png,webp'
         ]);
 

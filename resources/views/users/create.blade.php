@@ -1,362 +1,47 @@
 @extends('layouts.app')
 @section('styles')
-<style>
-    @import url('https://fonts.googleapis.com/css?family=Roboto');
-
-body{
-    font-family: 'Roboto', sans-serif;
-}
-* {
-    margin: 0;
-    padding: 0;
-}
-i {
-    margin-right: 10px;
-}
-
-/*------------------------*/
-input:focus,
-button:focus,
-.form-control:focus{
-    outline: none;
-    box-shadow: none;
-}
-.form-control:disabled, .form-control[readonly]{
-    background-color: #fff;
-}
-/*----------step-wizard------------*/
-.d-flex{
-    display: flex;
-}
-.justify-content-center{
-    justify-content: center;
-}
-.align-items-center{
-    align-items: center;
-}
-
-/*---------signup-step-------------*/
-.bg-color{
-    background-color: #333;
-}
-.signup-step-container{
-    padding: 150px 0px;
-    padding-bottom: 60px;
-}
-
-
-
-
-    .wizard .nav-tabs {
-        position: relative;
-        margin-bottom: 0;
-        border-bottom-color: transparent;
-    }
-
-    .wizard > div.wizard-inner {
-            position: relative;
-    margin-bottom: 50px;
-    text-align: center;
-    }
-
-.connecting-line {
-    height: 2px;
-    background: #e0e0e0;
-    position: absolute;
-    width: 75%;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    top: 15px;
-    z-index: 1;
-}
-
-.wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
-    color: #555555;
-    cursor: default;
-    border: 0;
-    border-bottom-color: transparent;
-}
-
-span.round-tab {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    display: inline-block;
-    border-radius: 50%;
-    background: #fff;
-    z-index: 2;
-    position: absolute;
-    left: 0;
-    text-align: center;
-    font-size: 16px;
-    color: #0e214b;
-    font-weight: 500;
-    border: 1px solid #ddd;
-}
-span.round-tab i{
-    color:#555555;
-}
-.wizard li.active span.round-tab {
-        background: #0db02b;
-    color: #fff;
-    border-color: #0db02b;
-}
-.wizard li.active span.round-tab i{
-    color: #5bc0de;
-}
-.wizard .nav-tabs > li.active > a i{
-    color: #0db02b;
-}
-
-.wizard .nav-tabs > li {
-    width: 25%;
-}
-
-.wizard li:after {
-    content: " ";
-    position: absolute;
-    left: 46%;
-    opacity: 0;
-    margin: 0 auto;
-    bottom: 0px;
-    border: 5px solid transparent;
-    border-bottom-color: red;
-    transition: 0.1s ease-in-out;
-}
-
-
-
-.wizard .nav-tabs > li a {
-    width: 30px;
-    height: 30px;
-    margin: 20px auto;
-    border-radius: 100%;
-    padding: 0;
-    background-color: transparent;
-    position: relative;
-    top: 0;
-}
-.wizard .nav-tabs > li a i{
-    position: absolute;
-    top: -15px;
-    font-style: normal;
-    font-weight: 400;
-    white-space: nowrap;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 12px;
-    font-weight: 700;
-    color: #000;
-}
-
-    .wizard .nav-tabs > li a:hover {
-        background: transparent;
-    }
-
-.wizard .tab-pane {
-    position: relative;
-    padding-top: 20px;
-}
-
-
-.wizard h3 {
-    margin-top: 0;
-}
-.prev-step,
-.next-step{
-    font-size: 13px;
-    padding: 8px 24px;
-    border: none;
-    border-radius: 4px;
-    margin-top: 30px;
-}
-.next-step{
-    background-color: #0db02b;
-}
-.skip-btn{
-    background-color: #cec12d;
-}
-.step-head{
-    font-size: 20px;
-    text-align: center;
-    font-weight: 500;
-    margin-bottom: 20px;
-}
-.term-check{
-    font-size: 14px;
-    font-weight: 400;
-}
-.custom-file {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    height: 40px;
-    margin-bottom: 0;
-}
-.custom-file-input {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    height: 40px;
-    margin: 0;
-    opacity: 0;
-}
-.custom-file-label {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 1;
-    height: 40px;
-    padding: .375rem .75rem;
-    font-weight: 400;
-    line-height: 2;
-    color: #495057;
-    background-color: #fff;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
-}
-.custom-file-label::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 3;
-    display: block;
-    height: 38px;
-    padding: .375rem .75rem;
-    line-height: 2;
-    color: #495057;
-    content: "Browse";
-    background-color: #e9ecef;
-    border-left: inherit;
-    border-radius: 0 .25rem .25rem 0;
-}
-.footer-link{
-    margin-top: 30px;
-}
-.all-info-container{
-
-}
-.list-content{
-    margin-bottom: 10px;
-}
-.list-content a{
-    padding: 10px 15px;
-    width: 100%;
-    display: inline-block;
-    background-color: #f5f5f5;
-    position: relative;
-    color: #565656;
-    font-weight: 400;
-    border-radius: 4px;
-}
-.list-content a[aria-expanded="true"] i{
-    transform: rotate(180deg);
-}
-.list-content a i{
-    text-align: right;
-    position: absolute;
-    top: 15px;
-    right: 10px;
-    transition: 0.5s;
-}
-.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
-    background-color: #fdfdfd;
-}
-.list-box{
-    padding: 10px;
-}
-.signup-logo-header .logo_area{
-    width: 200px;
-}
-.signup-logo-header .nav > li{
-    padding: 0;
-}
-.signup-logo-header .header-flex{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.list-inline li{
-    display: inline-block;
-}
-.pull-right{
-    float: right;
-}
-/*-----------custom-checkbox-----------*/
-/*----------Custom-Checkbox---------*/
-input[type="checkbox"]{
-    position: relative;
-    display: inline-block;
-    margin-right: 5px;
-}
-input[type="checkbox"]::before,
-input[type="checkbox"]::after {
-    position: absolute;
-    content: "";
-    display: inline-block;
-}
-input[type="checkbox"]::before{
-    height: 16px;
-    width: 16px;
-    border: 1px solid #999;
-    left: 0px;
-    top: 0px;
-    background-color: #fff;
-    border-radius: 2px;
-}
-input[type="checkbox"]::after{
-    height: 5px;
-    width: 9px;
-    left: 4px;
-    top: 4px;
-}
-input[type="checkbox"]:checked::after{
-    content: "";
-    border-left: 1px solid #fff;
-    border-bottom: 1px solid #fff;
-    transform: rotate(-45deg);
-}
-input[type="checkbox"]:checked::before{
-    background-color: #18ba60;
-    border-color: #18ba60;
-}
-
-@media (max-width: 767px){
-    .sign-content h3{
-        font-size: 40px;
-    }
-    .wizard .nav-tabs > li a i{
-        display: none;
-    }
-    .signup-logo-header .navbar-toggle{
-        margin: 0;
-        margin-top: 8px;
-    }
-    .signup-logo-header .logo_area{
-        margin-top: 0;
-    }
-    .signup-logo-header .header-flex{
-        display: block;
-    }
-}
-
-</style>
-  <style>
-
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/RobinHerbots/jquery.inputmask@5.0.0-beta.87/css/inputmask.css">
+    <style>
+        .f_user {
+            border: solid 1px #E1E1E1 !important;
+        }
+        input, select {
+            height: 40px !important;
+        }
+        .tab-pane {
+            border-bottom-right-radius: 7px;
+            border-bottom-left-radius: 7px;
+            border-left: solid 1px #dddfeb;
+            border-bottom: solid 1px #dddfeb;
+            border-right: solid 1px #dddfeb;
+            border-top: solid 1px #dddfeb;
+        }
+        .nav-link-user {
+            border-bottom: solid 1px #ffffff !important;
+            border-left: solid 1px #dddfeb !important;
+            border-top: solid 1px #dddfeb !important;
+            border-right: solid 1px #dddfeb !important;
+            background: white !important;
+            padding-bottom: 10px !important;
+            padding-top: 10px !important;
+            border-top-right-radius: 7px !important;
+            border-top-left-radius: 7px !important;
+        }
+        .active {
+            background-color: #EFF5FB !important;
+        }
+        a.dropdown-item.active.selected {
+            color: #4d83ff;
+        }
         .btn-primary_upload {
             display: block;
             border-radius: 0px;
             box-shadow: 0px 4px 6px 2px rgba(0, 0, 0, 0.2);
-
         }
-
         .imgUp {
             margin-bottom: 15px;
         }
-
         .del {
             position: absolute;
             top: 0px;
@@ -368,7 +53,6 @@ input[type="checkbox"]:checked::before{
             background-color: rgba(255, 255, 255, 0.6);
             cursor: pointer;
         }
-
         .imgAdd {
             width: 30px;
             height: 30px;
@@ -385,54 +69,144 @@ input[type="checkbox"]:checked::before{
     </style>
 @stop
 @section('js')
-<script>
-    // ------------step-wizard-------------
-$(document).ready(function () {
-    $('.nav-tabs > li a[title]').tooltip();
-
-    //Wizard
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-
-        var target = $(e.target);
-
-        if (target.parent().hasClass('disabled')) {
-            return false;
+    <script
+        src="https://cdn.jsdelivr.net/gh/RobinHerbots/jquery.inputmask@5.0.0-beta.87/dist/jquery.inputmask.min.js"></script>
+    <script>
+        function calcularEdad(fecha) {
+// Si la fecha es correcta, calculamos la edad
+            if (typeof fecha != "string" && fecha && esNumero(fecha.getTime())) {
+                fecha = formatDate(fecha, "yyyy-MM-dd");
+            }
+            var values = fecha.split("-");
+            var dia = values[2];
+            var mes = values[1];
+            var ano = values[0];
+// cogemos los valores actuales
+            var fecha_hoy = new Date();
+            var ahora_ano = fecha_hoy.getYear();
+            var ahora_mes = fecha_hoy.getMonth() + 1;
+            var ahora_dia = fecha_hoy.getDate();
+// realizamos el calculo
+            var edad = (ahora_ano + 1900) - ano;
+            if (ahora_mes < mes) {
+                edad--;
+            }
+            if ((mes == ahora_mes) && (ahora_dia < dia)) {
+                edad--;
+            }
+            if (edad > 1900) {
+                edad -= 1900;
+            }
+// calculamos los meses
+            var meses = 0;
+            if (ahora_mes > mes && dia > ahora_dia)
+                meses = ahora_mes - mes - 1;
+            else if (ahora_mes > mes)
+                meses = ahora_mes - mes
+            if (ahora_mes < mes && dia < ahora_dia)
+                meses = 12 - (mes - ahora_mes);
+            else if (ahora_mes < mes)
+                meses = 12 - (mes - ahora_mes + 1);
+            if (ahora_mes == mes && dia > ahora_dia)
+                meses = 11;
+// calculamos los dias
+            var dias = 0;
+            if (ahora_dia > dia)
+                dias = ahora_dia - dia;
+            if (ahora_dia < dia) {
+                ultimoDiaMes = new Date(ahora_ano, ahora_mes - 1, 0);
+                dias = ultimoDiaMes.getDate() - (dia - ahora_dia);
+            }
+            return edad + " años, " + meses + " meses y " + dias + " días";
         }
-    });
+        $('#birth').focusout(function () {
+            var x = $(this).val();
+            age = calcularEdad(x);
+            $("#age").val(age);
+        });
+        $('#surname1').focusout(function () {
+            surname1 = $("#surname1").val();
+            name1 = $("#name1").val();
+            id = $("#id").val();
+            if (surname1 == 0 || name1 == 0) {
+            } else {
+                codigo = name1.charAt(0) + surname1.charAt(0) +'-'+ id.padStart(8, 0);
+                $("#patient_code").val(codigo.toUpperCase());
+            }
+        });
+        $('#name1').focusout(function () {
+            surname1 = $("#surname1").val();
+            name1 = $("#name1").val();
+            id = $("#id").val() + {{ auth()->id() }};
+            if (surname1 == 0 || name1 == 0) {
+            } else {
+                codigo = name1.charAt(0) + surname1.charAt(0) + id.padStart(6, 0);
+                $("#patient_code").val(codigo.toUpperCase());
+            }
+        });
+        $('#name_relation').focusout(function () {
+            name_relation = $("#name_relation").val();
+            if (name_relation == 0) {
+                $("#kinship").attr("required", false);
+            } else {
+                $("#kinship").attr("required", true);
+            }
+        });
+        $( document ).ready(function() {
+             role = $('#role').val();
+            if (role == 'Médico' || role == 'Asistente') {
+                $(".h-medico").addClass("d-none")
+            }else{
+                $(".h-patient").addClass("d-none")
+            }
 
-    $(".next-step").click(function (e) {
-
-        var active = $('.wizard .nav-tabs li.active');
-        active.next().removeClass('disabled');
-        nextTab(active);
-
-    });
-    $(".prev-step").click(function (e) {
-
-        var active = $('.wizard .nav-tabs li.active');
-        prevTab(active);
-
-    });
-});
-
-function nextTab(elem) {
-    $(elem).next().find('a[data-toggle="tab"]').click();
-}
-function prevTab(elem) {
-    $(elem).prev().find('a[data-toggle="tab"]').click();
-}
-
-
-$('.nav-tabs').on('click', 'li', function() {
-    $('.nav-tabs li.active').removeClass('active');
-    $(this).addClass('active');
-});
-
-
-
-</script>
-
- <script>
+        });
+        $('#civil').on('change', function () {
+            var gender = $('#gender').find(":selected").val();
+            var civil = $(this).find(":selected").val();
+            if (gender == 'M') {
+                $("#married").addClass("d-none")
+            }
+        });
+        $('#gender').on('change', function () {
+            var gender = $(this).find(":selected").val();
+            var civil = $('#civil').find(":selected").val();
+            if (gender == 'M') {
+                $("#married").addClass("d-none")
+            }
+        });
+        $('#civil').on('change', function () {
+            var gender = $('#gender').find(":selected").val();
+            var civil = $(this).find(":selected").val();
+            if (gender == 'F' && civil == 'Married') {
+                $("#married").removeClass("d-none")
+            }
+        });
+        $('#gender').on('change', function () {
+            var gender = $(this).find(":selected").val();
+            var civil = $('#civil').find(":selected").val();
+            if (gender == 'F' && civil == 'Married') {
+                $("#married").removeClass("d-none")
+            }
+        });
+        $('#civil').on('change', function () {
+            var gender = $('#gender').find(":selected").val();
+            var civil = $(this).find(":selected").val();
+            if (gender == 'F' && civil == 'Single') {
+                $("#married").addClass("d-none")
+            }
+        });
+        $('#gender').on('change', function () {
+            var gender = $(this).find(":selected").val();
+            var civil = $('#civil').find(":selected").val();
+            if (gender == 'F' && civil == 'Single') {
+                $("#married").addClass("d-none")
+            }
+        });
+        // Initialize InputMask
+        $(":input").inputmask();
+    </script>
+    <script>
         $(".imgAdd").click(function () {
             $(this).closest(".row").find('.imgAdd').before('<div class="col-sm-2 imgUp"><div class="imagePreview"></div><label class="btn btn-primary">Upload<input type="file" class="uploadFile img" value="Upload Photo" style="width:0px;height:0px;overflow:hidden;"></label><i class="fa fa-times del"></i></div>');
         });
@@ -444,21 +218,17 @@ $('.nav-tabs').on('click', 'li', function() {
                 var uploadFile = $(this);
                 var files = !!this.files ? this.files : [];
                 if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
-
                 if (/^image/.test(files[0].type)) { // only image file
                     var reader = new FileReader(); // instance of the FileReader
                     reader.readAsDataURL(files[0]); // read the local file
-
                     reader.onloadend = function () { // set image data as background of div
                         //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
                         uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url(" + this.result + ")");
                     }
                 }
-
             });
         });
     </script>
-
     <script>
         $('#country').change(function () {
             var cid = $(this).val();
@@ -466,7 +236,6 @@ $('.nav-tabs').on('click', 'li', function() {
                 $.ajax({
                     type: 'post',
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-
                     url: " {{url('/getStates')}}/" + cid, //Please see the note at the end of the post**
                     success: function (res) {
                         if (res) {
@@ -478,7 +247,6 @@ $('.nav-tabs').on('click', 'li', function() {
                             });
                         }
                     }
-
                 });
             }
         });
@@ -498,7 +266,6 @@ $('.nav-tabs').on('click', 'li', function() {
                             });
                         }
                     }
-
                 });
             }
         });
@@ -514,9 +281,9 @@ $('.nav-tabs').on('click', 'li', function() {
                         <p class="mb-md-0">Crea un nuevo usuario </p>
                     </div>
                     <div class="d-flex mb-sm-2 mb-md-0">
-                        <a href="{{route('home')}}"><i class="mdi mdi-home hover-cursor"></i>&nbsp;/</a>
+                        <a href="{{route('home')}}"><i class="mdi mdi-home"></i>&nbsp;/</a>
                         <a href="{{route('users.index')}}">&nbsp;Usuarios&nbsp;/&nbsp;</a>
-                        <p class="text-muted mb-0 hover-cursor">Crear&nbsp;/&nbsp;</p>
+                        <p class="text-muted mb-0">Crear&nbsp;/&nbsp;</p>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
@@ -534,23 +301,22 @@ $('.nav-tabs').on('click', 'li', function() {
                 <div class="card-body">
                     {!! Form::open(array('route' => 'users.store','method'=>'POST','files' => 'true','enctype'=>'miltipart/form-data')) !!}
                     <div class="row">
-                        <div class="col-lg-3 imgUp">
+                        <div class="col-lg-2 imgUp">
                             <label class="font-weight-medium mb-3">Foto:</label>
                             <div class="imagePreview" style="
                                 width: 100%;
-                                height: 230px;
-                                 @php
-                                    if(isset($setting->avatar))
-                                    {$avatar = $setting->avatar;}
-                                    else
-                                    {$avatar = null;}
-                                @endphp
-                                @if($avatar == null)
+                                height: 180px;
+                            @php
+                                if(isset($setting->avatar))
+                                {$avatar = $setting->avatar;}
+                                else
+                                {$avatar = null;}
+                            @endphp
+                            @if($avatar == null)
                                 background: url({{asset('images/sin_imagen.jpg')}});
                             @else
                                 background: url({{asset('storage/'.$avatar)}});
-                                @endif
-
+                            @endif
                                 background-color: #fff;
                                 background-position: center;
                                 background-size: cover;
@@ -559,21 +325,17 @@ $('.nav-tabs').on('click', 'li', function() {
                                 box-shadow: 0px -3px 6px 2px rgba(0, 0, 0, 0.2);
                                 "></div>
                             <label class="btn btn-primary btn-primary_upload">
-                                Buscar Imagen<input type="file" name="avatar" class="uploadFile img" value="Upload Photo"
-                                             style="width: 0px;height: 0px;overflow: hidden;">
+                                Buscar Imagen
+                                <input type="file" name="avatar" class="uploadFile img" value="Upload Photo"
+                                       style="width: 0px;height: 0px !important;overflow: hidden;">
                             </label>
-
-                        @if ($errors->has('avatar'))
-                            <small class="text-danger">{{ $errors->first('avatar') }}</small>
-                        @endif
+                            @if ($errors->has('avatar'))
+                                <small class="text-danger">{{ $errors->first('avatar') }}</small>
+                            @endif
                         </div><!-- col-3 -->
-                   <div class="col-lg-9">
-
                         @include('users.inputs')
+                        {!! Form::close() !!}
                     </div>
-                    {!! Form::close() !!}
                 </div>
             </div>
-        </div>
-    </div>
 @endsection

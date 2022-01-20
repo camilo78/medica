@@ -15,7 +15,7 @@
                         <p class="mb-md-0">Información del rol</p>
                     </div>
                     <div class="d-flex mb-sm-2 mb-md-0">
-                        <a href="{{route('home')}}"><i class="mdi mdi-home hover-cursor"></i>&nbsp;/</a>
+                        <a href="{{route('home')}}"><i class="mdi mdi-home"></i>&nbsp;/</a>
                         <a href="{{route('roles.index')}}">&nbsp;Roles&nbsp;/&nbsp;</a>
                         <p class="text-muted mb-0 hover-cursor">{{$role->name}}&nbsp;/&nbsp;</p>
                     </div>

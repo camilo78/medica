@@ -30,19 +30,28 @@ class User extends Authenticatable
         'name2',
         'surname1',
         'surname2',
+        'married_name',
         'avatar',
+        'email',
         'phone1',
+        'phone2',
+        'gender',
+        'civil',
+        'birth',
+        'patient_code',
+        'document_type',
+        'document',
+        'status',
+        'name_relation',
+        'kinship',
         'address',
         'country_id',
         'state_id',
-        'city_id',
-        'email',
         'password',
-        'setting_id',
+        'city_id',
+        'setting_id'
     ];
-
     protected $dates = ['deleted_at'];
-
     protected static $imageFields = [
         'avatar' => [
             'width' => 260,
@@ -75,7 +84,6 @@ class User extends Authenticatable
             'updated',
             'deleted',
         ];
-
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -85,17 +93,14 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
     public function city()
     {
         return $this->belongsTo(city::class);
     }
-
     public function country()
     {
         return $this->belongsTo(Country::class);
     }
-
     public function state()
     {
         return $this->belongsTo(State::class);
@@ -112,12 +117,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
     public  function scopeLike($query,$value){
         return $query->where('name1', 'like', "%" . $value . "%")
             ->orWhere('surname1', 'like', "%" . $value . "%")
             ->orWhere('name2', 'like', "%" . $value . "%")
             ->orWhere('surname2', 'like', "%" . $value . "%");
-
     }
 }

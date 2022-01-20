@@ -34,6 +34,11 @@
             </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
+            @if(session('impersonate_by'))
+            <li class="nav-item">
+                <a href="{{ route('impersonate.stop') }}" class="btn btn-sm btn-inverse-primary">Administrador</a>
+            </li>
+            @endif
             <li class="nav-item dropdown mr-1">
                 <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center"
                    id="messageDropdown" href="#" data-toggle="dropdown">

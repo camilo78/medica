@@ -22,9 +22,11 @@
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
                     @can('user-edit')
-                        <a class="btn btn-info mr-3 mt-2 mt-xl-0" href="{{route('settings.edit', $setting->id)}}"> <i class="mdi mdi-account-edit"></i> Editar Clínica</a>
+                        <a class="btn btn-info mr-3 mt-2 mt-xl-0" href="{{route('settings.edit', $setting->id)}}"> <i
+                                class="mdi mdi-account-edit"></i> Editar Clínica</a>
                     @endcan
-                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{URL::previous()}}"><i class="mdi mdi-step-backward"></i> Atras</a>
+                    <a class="btn btn-primary mt-2 mt-xl-0" href="{{URL::previous()}}"><i
+                            class="mdi mdi-step-backward"></i> Atras</a>
                 </div>
             </div>
         </div>
@@ -39,10 +41,10 @@
                         <div class="col-lg-3 imgUp">
                             <img class="img-thumbnail img-fluid" src="
                                 @if($setting->avatar == null)
-                                {{asset('images/sin_imagen.jpg')}}
-                                @else
-                                {{asset('storage/'.$setting->avatar)}}
-                                @endif" alt="profile"/>
+                            {{asset('images/sin_imagen.jpg')}}
+                            @else
+                            {{asset('storage/'.$setting->avatar)}}
+                            @endif" alt="profile"/>
                         </div>
                         <div class="col-lg-9">
                             <div class="row">
@@ -58,12 +60,14 @@
                                         <p>{{$setting->phone}}</p>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <label class="font-weight-medium">Sitio Web:</label>
-                                        <p>{{$setting->web}}</p>
+                                @if($setting->web)
+                                    <div class="col-xs-12 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-medium">Sitio Web:</label>
+                                            <p>{{$setting->web}}</p>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                                 <div class="col-xs-12 col-sm-6 col-md-6">
                                     <div class="form-group">
                                         <label class="font-weight-medium">Dirección:</label>

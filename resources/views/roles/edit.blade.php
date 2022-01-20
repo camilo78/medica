@@ -15,10 +15,10 @@
                         <p class="mb-md-0">Edita la información de el rol {{$role->name}}</p>
                     </div>
                     <div class="d-flex mb-sm-2 mb-md-0">
-                        <a href="{{route('home')}}"><i class="mdi mdi-home hover-cursor"></i>&nbsp;/</a>
+                        <a href="{{route('home')}}"><i class="mdi mdi-home"></i>&nbsp;/</a>
                         <a href="{{route('roles.index')}}">&nbsp;Roles&nbsp;/&nbsp;</a>
                         <a href="{{route('roles.show',$role->id)}}">{{$role->name}}&nbsp;/&nbsp;</a>
-                        <p class="text-muted mb-0 hover-cursor">Editar&nbsp;/&nbsp;</p>
+                        <p class="text-muted mb-0">Editar&nbsp;/&nbsp;</p>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">

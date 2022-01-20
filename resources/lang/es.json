@@ -54,5 +54,17 @@
     "updated_at": "Actualizado el",
     "created_at": "Creado el",
     "deleted": "Eliminado",
-    "Statistics": "Estadísticas"
+    "Statistics": "Estadísticas",
+    "Single": "Soltero (a)",
+    "Married": "Casado (a)",
+    "Spouse": "Conyugue",
+    "Mother": "Madre",
+    "Father": "Padre",
+    "Partner": "Pareja",
+    "Son or Daughter": "Hijo o Hija",
+    "Aunt or Uncle": "Tío o Tía",
+    "Cousin": "Primo o Prima",
+    "Other": "Otro",
+    "ID number": "N. Documento",
+    "Passport": "Pasaporte"
 }

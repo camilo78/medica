@@ -1,18 +1,15 @@
 @extends('layouts.app')
 @section('styles')
     <style>
-
         .btn-primary_upload {
             display: block;
             border-radius: 0px;
             box-shadow: 0px 4px 6px 2px rgba(0, 0, 0, 0.2);
 
         }
-
         .imgUp {
             margin-bottom: 15px;
         }
-
         .del {
             position: absolute;
             top: 0px;
@@ -24,7 +21,6 @@
             background-color: rgba(255, 255, 255, 0.6);
             cursor: pointer;
         }
-
         .imgAdd {
             width: 30px;
             height: 30px;
@@ -103,11 +99,11 @@
                     @endif
 
                     <div class="row">
-                        <div class="col-lg-3 imgUp">
+                        <div class="col-lg-2 imgUp">
                             <label class="font-weight-medium mb-3">Foto:</label>
                            <div class="imagePreview" style="
                                 width: 100%;
-                                height: 230px;
+                                height: 160px;
                                 @php
                                     if(isset($setting->avatar))
                                     {$avatar = $setting->avatar;}
@@ -136,7 +132,9 @@
                             <small class="text-danger">{{ $errors->first('avatar') }}</small>
                         @endif
                         </div><!-- col-3 -->
-                        @include('settings.inputs')
+                        <div class="col-lg-10">
+                            @include('settings.inputs')
+                        </div>
                     </div>
                     {!! Form::close() !!}
                 </div>

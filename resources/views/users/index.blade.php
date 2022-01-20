@@ -60,17 +60,17 @@
 
                 ajax: "{{ route('users.index') }}",
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                    {data: 'name', name: 'name'},
-                    {data: 'email', name: 'email'},
-                    {data: 'phone', name: 'phone'},
-                    {data: 'role', name: 'role'},
-                        @can('user-edit')
-                            {data: 'edit', name: 'edit', orderable: false, searchable: false},
-                        @endcan
+                        {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                        {data: 'name', name: 'name'},
+                        {data: 'email', name: 'email'},
+                        {data: 'phone', name: 'phone'},
+                        {data: 'role', name: 'role'},
                         @role('Admin')
                             {data: 'setting', name: 'setting'},
                         @endrole
+                        @can('user-edit')
+                            {data: 'edit', name: 'edit', orderable: false, searchable: false},
+                        @endcan
                         @can('user-delete')
                             {data: 'choose', name: 'choose', orderable: false, searchable: false},
                         @endcan
@@ -166,8 +166,8 @@
                         <p class="mb-md-0">{{__('Cree, elimine y actualice usuarios')}}</p>
                     </div>
                     <div class="d-flex mb-sm-2 mb-md-0">
-                        <a href="{{route('home')}}"><i class="mdi mdi-home hover-cursor"></i>&nbsp;/</a>
-                        <p class="text-muted mb-0 hover-cursor">&nbsp;Usuarios&nbsp;/</p>
+                        <a href="{{route('home')}}"><i class="mdi mdi-home"></i>&nbsp;/</a>
+                        <p class="text-muted mb-0">&nbsp;Usuarios&nbsp;/</p>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
@@ -200,12 +200,13 @@
                                 <th width="50px">Email</th>
                                 <th width="50px">Teléfono</th>
                                 <th width="50px">Rol</th>
-                                @can('user-edit')
-                                    <th class="text-center" width="50px">Editar</th>
-                                @endcan
+
                                 @role('Admin')
                                 <th width="50px">Clínica</th>
                                 @endrole
+                                @can('user-edit')
+                                    <th class="text-center" width="50px">Editar</th>
+                                @endcan
                                 @can('user-delete')
                                 <th class="text-center" width="50px"><i class="mdi mdi-checkbox-marked-outline"></i></th>
                                 @endcan

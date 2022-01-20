@@ -31,7 +31,7 @@ class CreateAdminUserSeeder extends Seeder
         ]);
         $role = Role::create(['name' => 'Admin']);
         $medic = Role::create(['name' => 'Médico']);
-        Role::create(['name' => 'Asitente']);
+        Role::create(['name' => 'Asistente']);
         Role::create(['name' => 'Paciente']);
         $permissions = Permission::pluck('id','id')->all();
         $permissions_user = Permission::where('name', 'like', "%user-%")

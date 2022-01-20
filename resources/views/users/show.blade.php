@@ -14,13 +14,11 @@
 @stop
 @section('js')
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.24/b-1.7.0/b-html5-1.7.0/r-2.2.7/datatables.min.js"></script>
-
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#logs').DataTable( {
-
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
                 },
@@ -40,16 +38,25 @@
             <div class="d-flex justify-content-between flex-wrap">
                 <div class="d-flex align-items-end flex-wrap">
                     <div class="mr-md-3 mr-xl-5 mr-4">
-                        <h2>{{ $user->name1 .' '.$user->name2.' '.$user->surname1}}</h2>
+                        <h3>{{ $user->name1 .' '.$user->name2.' '.$user->surname1}}</h3>
                         <p class="mb-md-0">Información del usuario</p>
                     </div>
                     <div class="d-flex mb-sm-2 mb-md-0">
-                        <a href="{{route('home')}}"><i class="mdi mdi-home hover-cursor"></i>&nbsp;/</a>
-                        <a href="{{route('users.index')}}">&nbsp;Usuarios&nbsp;/&nbsp;</a>
-                        <p class="text-muted mb-0 hover-cursor">{{ $user->name1 .' '.$user->name2.' '.$user->surname1}}&nbsp;/&nbsp;</p>
+                        <a href="{{route('home')}}"><i class="mdi mdi-home"></i>&nbsp;/</a>
+                        <a class="mb-0" href="{{route('users.index')}}">&nbsp;Usuarios&nbsp;/&nbsp;</a>
+                        <p class="text-muted mb-0">{{ $user->name1 .' '.$user->name2.' '.$user->surname1}}&nbsp;/&nbsp;</p>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
+                    @role('Admin')
+                    <form action="{{ route('impersonate.start', compact('user')) }}" method="POST" style="margin:0px">
+                        @csrf
+
+                    <button type="submit" id="delete" class="btn btn-warning btn-icon mr-3 mt-2 mt-xl-0" data-toggle="tooltip" data-placement="top" title="Entrar como este usuario">
+                            <i class="fas fa-user-clock"></i>
+                        </button>
+                        </form>
+                    @endrole
                     @can('user-edit')
                         <a class="btn btn-info mr-3 mt-2 mt-xl-0" href="{{ route('users.edit',$user->id) }}"> <i
                                 class="mdi mdi-account-edit"></i> Editar Usuario</a>
