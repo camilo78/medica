@@ -12,7 +12,14 @@ class ImpersonateController extends Controller
     public function start(User $user){
         session()->put('impersonate_by',auth()->id());
         Auth::login($user);
-        return redirect('/home');
+
+        if (Auth::user()->roles->first()->id == 3){
+            return redirect('/users');
+        }elseif (Auth::user()->roles->first()->id == 4){
+            return redirect('/users/' . Auth::User()->id);
+        }else{
+            return redirect('/home');
+        }
     }
 
     public function stop(User $user){

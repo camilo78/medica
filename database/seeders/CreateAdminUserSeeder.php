@@ -29,16 +29,28 @@ class CreateAdminUserSeeder extends Seeder
             'phone1' => rand(11111111, 99999999),
         	'password' => bcrypt('milogaqw'),
         ]);
-        $role = Role::create(['name' => 'Admin']);
+
+        $admin = Role::create(['name' => 'Admin']);
         $medic = Role::create(['name' => 'Médico']);
-        Role::create(['name' => 'Asistente']);
-        Role::create(['name' => 'Paciente']);
-        $permissions = Permission::pluck('id','id')->all();
-        $permissions_user = Permission::where('name', 'like', "%user-%")
-            ->orWhere('name', "setting-edit")
+        $asistant = Role::create(['name' => 'Asistente']);
+        $patient = Role::create(['name' => 'Paciente']);
+
+        $permissions_admin = Permission::pluck('id','id')->all();
+        $admin->syncPermissions($permissions_admin);
+
+        $permissions_medic = Permission::where('name', 'like', "%user-%")
+            ->orWhere('name', 'like', "%setting-%")
             ->pluck('id','id')->all();
-        $role->syncPermissions($permissions);
-        $medic->syncPermissions($permissions_user);
-        $user->assignRole([$role->id]);
+        $medic->syncPermissions($permissions_medic);
+
+        $permissions_asistente = Permission::where('name', 'like', "%user-%")
+            ->pluck('id','id')->all();
+        $asistant->syncPermissions($permissions_asistente);
+
+        $permissions_patient = Permission::where('name', "user-show")->where('name', "user-edit")
+            ->pluck('id','id')->all();
+        $patient->syncPermissions($permissions_patient);
+
+        $user->assignRole([$admin->id]);
     }
 }

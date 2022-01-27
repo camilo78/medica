@@ -72,6 +72,7 @@
     <script
         src="https://cdn.jsdelivr.net/gh/RobinHerbots/jquery.inputmask@5.0.0-beta.87/dist/jquery.inputmask.min.js"></script>
     <script>
+        $( document ).ready(function() {
         function calcularEdad(fecha) {
 // Si la fecha es correcta, calculamos la edad
             if (typeof fecha != "string" && fecha && esNumero(fecha.getTime())) {
@@ -152,15 +153,33 @@
                 $("#kinship").attr("required", true);
             }
         });
-        $( document ).ready(function() {
-             role = $('#role').val();
+
+            role = $('#role').find(":selected").val();
             if (role == 'Médico' || role == 'Asistente') {
-                $(".h-medico").addClass("d-none")
+                $(".h-medico").addClass("d-none");
+               $(".h-patient").removeClass("d-none");
             }else{
-                $(".h-patient").addClass("d-none")
+                $(".h-patient").addClass("d-none");
+                $(".h-medico").removeClass("d-none");
             }
 
+
+
+        /*$("select#role").each(function() {
+            this.disabled = $('option', this).length < 2;
+        });*/
+
+        $('#role').on('change', function () {
+            var role = $('#role').find(":selected").val();
+            if (role == 'Médico' || role == 'Asistente') {
+                $(".h-medico").addClass("d-none");
+               $(".h-patient").removeClass("d-none");
+            }else{
+               $(".h-patient").addClass("d-none");
+                $(".h-medico").removeClass("d-none");
+            }
         });
+
         $('#civil').on('change', function () {
             var gender = $('#gender').find(":selected").val();
             var civil = $(this).find(":selected").val();
@@ -203,6 +222,28 @@
                 $("#married").addClass("d-none")
             }
         });
+        const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              showCloseButton: true,
+              timer: 5000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+        })
+
+        var has_errors = {{ $errors->count() > 0 ? 'true' : 'false'}};
+        if(has_errors){
+            Toast.fire({
+                title: 'Errores del Formulario',
+                icon: 'error',
+                html:jQuery("#ERROR_COPY").html(),
+            })
+        }
+});
         // Initialize InputMask
         $(":input").inputmask();
     </script>

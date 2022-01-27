@@ -71,135 +71,178 @@
         src="https://cdn.jsdelivr.net/gh/RobinHerbots/jquery.inputmask@5.0.0-beta.87/dist/jquery.inputmask.min.js">
     </script>
     <script>
-        function calcularEdad(fecha) {
-            // Si la fecha es correcta, calculamos la edad
-            if (typeof fecha != "string" && fecha && esNumero(fecha.getTime())) {
-                fecha = formatDate(fecha, "yyyy-MM-dd");
-            }
-            var values = fecha.split("-");
-            var dia = values[2];
-            var mes = values[1];
-            var ano = values[0];
-            // cogemos los valores actuales
-            var fecha_hoy = new Date();
-            var ahora_ano = fecha_hoy.getYear();
-            var ahora_mes = fecha_hoy.getMonth() + 1;
-            var ahora_dia = fecha_hoy.getDate();
-            // realizamos el calculo
-            var edad = (ahora_ano + 1900) - ano;
-            if (ahora_mes < mes) {
-                edad--;
-            }
-            if ((mes == ahora_mes) && (ahora_dia < dia)) {
-                edad--;
-            }
-            if (edad > 1900) {
-                edad -= 1900;
-            }
-            // calculamos los meses
-            var meses = 0;
-            if (ahora_mes > mes && dia > ahora_dia)
-                meses = ahora_mes - mes - 1;
-            else if (ahora_mes > mes)
-                meses = ahora_mes - mes
-            if (ahora_mes < mes && dia < ahora_dia)
-                meses = 12 - (mes - ahora_mes);
-            else if (ahora_mes < mes)
-                meses = 12 - (mes - ahora_mes + 1);
-            if (ahora_mes == mes && dia > ahora_dia)
-                meses = 11;
-            // calculamos los dias
-            var dias = 0;
-            if (ahora_dia > dia)
-                dias = ahora_dia - dia;
-            if (ahora_dia < dia) {
-                ultimoDiaMes = new Date(ahora_ano, ahora_mes - 1, 0);
-                dias = ultimoDiaMes.getDate() - (dia - ahora_dia);
-            }
-            return edad + " años, " + meses + " meses y " + dias + " días";
-        }
-        $('#birth').focusout(function () {
-            var x = $(this).val();
-            age = calcularEdad(x);
-            $("#age").val(age);
-        });
-        $('#surname1').focusout(function () {
-            surname1 = $("#surname1").val();
-            name1 = $("#name1").val();
-            id = $("#id").val() + {{ auth()->id() }};
-            if (surname1 == 0 || name1 == 0) {
-            } else {
-                codigo = name1.charAt(0) + surname1.charAt(0) + id.padStart(6, 0);
-                $("#patient_code").val(codigo.toUpperCase());
-            }
-        });
-        $('#name1').focusout(function () {
-            surname1 = $("#surname1").val();
-            name1 = $("#name1").val();
-            id = $("#id").val() + {{ auth()->id() }};
-            if (surname1 == 0 || name1 == 0) {
-            } else {
-                codigo = name1.charAt(0) + surname1.charAt(0) + id.padStart(6, 0);
-                $("#patient_code").val(codigo.toUpperCase());
-            }
-        });
-        $('#name_relation').focusout(function () {
-            name_relation = $("#name_relation").val();
-            if (name_relation == 0) {
-                $("#kinship").attr("required", false);
-            } else {
-                $("#kinship").attr("required", true);
-            }
-        });
         $( document ).ready(function() {
-            role = $('#role').val();
+            function calcularEdad(fecha) {
+// Si la fecha es correcta, calculamos la edad
+                if (typeof fecha != "string" && fecha && esNumero(fecha.getTime())) {
+                    fecha = formatDate(fecha, "yyyy-MM-dd");
+                }
+                var values = fecha.split("-");
+                var dia = values[2];
+                var mes = values[1];
+                var ano = values[0];
+// cogemos los valores actuales
+                var fecha_hoy = new Date();
+                var ahora_ano = fecha_hoy.getYear();
+                var ahora_mes = fecha_hoy.getMonth() + 1;
+                var ahora_dia = fecha_hoy.getDate();
+// realizamos el calculo
+                var edad = (ahora_ano + 1900) - ano;
+                if (ahora_mes < mes) {
+                    edad--;
+                }
+                if ((mes == ahora_mes) && (ahora_dia < dia)) {
+                    edad--;
+                }
+                if (edad > 1900) {
+                    edad -= 1900;
+                }
+// calculamos los meses
+                var meses = 0;
+                if (ahora_mes > mes && dia > ahora_dia)
+                    meses = ahora_mes - mes - 1;
+                else if (ahora_mes > mes)
+                    meses = ahora_mes - mes
+                if (ahora_mes < mes && dia < ahora_dia)
+                    meses = 12 - (mes - ahora_mes);
+                else if (ahora_mes < mes)
+                    meses = 12 - (mes - ahora_mes + 1);
+                if (ahora_mes == mes && dia > ahora_dia)
+                    meses = 11;
+// calculamos los dias
+                var dias = 0;
+                if (ahora_dia > dia)
+                    dias = ahora_dia - dia;
+                if (ahora_dia < dia) {
+                    ultimoDiaMes = new Date(ahora_ano, ahora_mes - 1, 0);
+                    dias = ultimoDiaMes.getDate() - (dia - ahora_dia);
+                }
+                return edad + " años, " + meses + " meses y " + dias + " días";
+            }
+            $('#birth').focusout(function () {
+                var x = $(this).val();
+                age = calcularEdad(x);
+                $("#age").val(age);
+            });
+            var y = $('#birth').val();
+            age = calcularEdad(y);
+            $("#age").val(age);
+
+            $('#surname1').focusout(function () {
+                surname1 = $("#surname1").val();
+                name1 = $("#name1").val();
+                id = $("#id").val();
+                if (surname1 == 0 || name1 == 0) {
+                } else {
+                    codigo = name1.charAt(0) + surname1.charAt(0) +'-'+ id.padStart(8, 0);
+                    $("#patient_code").val(codigo.toUpperCase());
+                }
+            });
+            $('#name1').focusout(function () {
+                surname1 = $("#surname1").val();
+                name1 = $("#name1").val();
+                id = $("#id").val() + {{ auth()->id() }};
+                if (surname1 == 0 || name1 == 0) {
+                } else {
+                    codigo = name1.charAt(0) + surname1.charAt(0) + id.padStart(6, 0);
+                    $("#patient_code").val(codigo.toUpperCase());
+                }
+            });
+            $('#name_relation').focusout(function () {
+                name_relation = $("#name_relation").val();
+                if (name_relation == 0) {
+                    $("#kinship").attr("required", false);
+                } else {
+                    $("#kinship").attr("required", true);
+                }
+            });
+
+            /*$("select#role").each(function() {
+                this.disabled = $('option', this).length < 2;
+            });*/
+
+            $('#role').on('change', function () {
+                var role = $('#role').find(":selected").val();
+                if (role == 'Médico' || role == 'Asistente') {
+                    $(".h-medico").addClass("d-none");
+                    $(".h-patient").removeClass("d-none");
+                }else{
+                    $(".h-patient").addClass("d-none");
+                    $(".h-medico").removeClass("d-none");
+                }
+            });
+
+            var role = $('#role').find(":selected").val();
             if (role == 'Médico' || role == 'Asistente') {
-                $(".h-medico").addClass("d-none")
+                $(".h-medico").addClass("d-none");
+                $(".h-patient").removeClass("d-none");
             }else{
-                $(".h-patient").addClass("d-none")
+                $(".h-patient").addClass("d-none");
+                $(".h-medico").removeClass("d-none");
             }
 
-        });
-        $('#civil').on('change', function () {
-            var gender = $('#gender').find(":selected").val();
-            var civil = $(this).find(":selected").val();
-            if (gender == 'M') {
-                $("#married").addClass("d-none")
-            }
-        });
-        $('#gender').on('change', function () {
-            var gender = $(this).find(":selected").val();
-            var civil = $('#civil').find(":selected").val();
-            if (gender == 'M') {
-                $("#married").addClass("d-none")
-            }
-        });
-        $('#civil').on('change', function () {
-            var gender = $('#gender').find(":selected").val();
-            var civil = $(this).find(":selected").val();
-            if (gender == 'F' && civil == 'Married') {
-                $("#married").removeClass("d-none")
-            }
-        });
-        $('#gender').on('change', function () {
-            var gender = $(this).find(":selected").val();
-            var civil = $('#civil').find(":selected").val();
-            if (gender == 'F' && civil == 'Married') {
-                $("#married").removeClass("d-none")
-            }
-        });
-        $('#civil').on('change', function () {
-            var gender = $('#gender').find(":selected").val();
-            var civil = $(this).find(":selected").val();
-            if (gender == 'F' && civil == 'Single') {
-                $("#married").addClass("d-none")
-            }
-        });
-        $('#gender').on('change', function () {
-            var gender = $(this).find(":selected").val();
-            var civil = $('#civil').find(":selected").val();
-            if (gender == 'F' && civil == 'Single') {
-                $("#married").addClass("d-none")
+            $('#civil').on('change', function () {
+                var gender = $('#gender').find(":selected").val();
+                var civil = $(this).find(":selected").val();
+                if (gender == 'M') {
+                    $("#married").addClass("d-none")
+                }
+            });
+            $('#gender').on('change', function () {
+                var gender = $(this).find(":selected").val();
+                var civil = $('#civil').find(":selected").val();
+                if (gender == 'M') {
+                    $("#married").addClass("d-none")
+                }
+            });
+            $('#civil').on('change', function () {
+                var gender = $('#gender').find(":selected").val();
+                var civil = $(this).find(":selected").val();
+                if (gender == 'F' && civil == 'Married') {
+                    $("#married").removeClass("d-none")
+                }
+            });
+            $('#gender').on('change', function () {
+                var gender = $(this).find(":selected").val();
+                var civil = $('#civil').find(":selected").val();
+                if (gender == 'F' && civil == 'Married') {
+                    $("#married").removeClass("d-none")
+                }
+            });
+            $('#civil').on('change', function () {
+                var gender = $('#gender').find(":selected").val();
+                var civil = $(this).find(":selected").val();
+                if (gender == 'F' && civil == 'Single') {
+                    $("#married").addClass("d-none")
+                }
+            });
+            $('#gender').on('change', function () {
+                var gender = $(this).find(":selected").val();
+                var civil = $('#civil').find(":selected").val();
+                if (gender == 'F' && civil == 'Single') {
+                    $("#married").addClass("d-none")
+                }
+            });
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                showCloseButton: true,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            var has_errors = {{ $errors->count() > 0 ? 'true' : 'false'}};
+            if(has_errors){
+                Toast.fire({
+                    title: 'Errores del Formulario',
+                    icon: 'error',
+                    html:jQuery("#ERROR_COPY").html(),
+                })
             }
         });
         // Initialize InputMask

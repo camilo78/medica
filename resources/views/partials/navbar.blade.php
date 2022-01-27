@@ -1,8 +1,7 @@
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="navbar-brand-wrapper d-flex justify-content-center">
         <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
-            <a class="navbar-brand brand-logo" href="{{route('home')}}"><img src="{{asset('images/logo.svg')}}"
-                                                                             alt="logo"/></a>
+            <a class="navbar-brand brand-logo" href="{{route('home')}}"><img src="{{asset('images/logo.svg')}}" alt="logo"/></a>
             <a class="navbar-brand brand-logo-mini" href="{{route('home')}}"><img
                     src="{{asset('images/logo-mini.svg')}}" alt="logo"/></a>
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -12,6 +11,7 @@
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <ul class="navbar-nav mr-lg-4 w-100">
+            @if(Auth::user()->getRoleNames()->first() == 'Admin' or Auth::user()->getRoleNames()->first() == 'Médico' or Auth::user()->getRoleNames()->first() == 'Asistente')
             <li class="nav-item nav-search d-none d-md-block w-100">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -32,7 +32,13 @@
                     </div>
                 </div>
             </li>
+            @else
+                <li class="nav-item h4 text-primary">
+                    <span class="h3"> {{ Auth::user()->gender == 'M' ? '👨‍⚕ ' : '👩‍⚕️ ' }} </span> ¡Bienvenid{{$user->gender == 'M' ? 'o' : 'a'}} a tu perfil en línea de {{ Auth::user()->setting->name }}!
+                </li>
+            @endif
         </ul>
+
         <ul class="navbar-nav navbar-nav-right">
             @if(session('impersonate_by'))
             <li class="nav-item">
@@ -149,7 +155,7 @@
                         {{ __('Profile') }}
                     </a>
                     @role('Médico')
-                    <a class="dropdown-item" href="{{ Route('settings.index') }}">
+                    <a class="dropdown-item" href="{{route('settings.create')}}">
                         <i class="mdi mdi-settings text-primary"></i>
                         {{ __('Settings') }}
                     </a>

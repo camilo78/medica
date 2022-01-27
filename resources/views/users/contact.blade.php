@@ -19,7 +19,7 @@
 <div class="col-xs-12 col-sm-4 col-md-3">
     <div class="form-group">
         <label>País:</label> <span class="text-danger">*</span>
-        <select class="form-control selectpicker f_user" name="country_id" id="country" title="Seleccione un País"
+        <select class="form-control f_user" name="country_id" id="country" title="Seleccione un País"
             data-live-search="true">
             <option value=""></option>
             @foreach ($countries as $country)
@@ -37,7 +37,7 @@
 <div class="col-xs-12 col-sm-4 col-md-3">
     <div class="form-group">
         <label>Departamento:</label> <span class="text-danger">*</span>
-        <select class="form-control btn-light f_user" name="state_id" id="state">
+        <select class="form-control f_user" name="state_id" id="state">
             @if(isset($user))
             @foreach ($states as $state)
             <option
@@ -55,7 +55,7 @@
 <div class="col-xs-12 col-sm-4 col-md-3">
     <div class="form-group">
         <label>Ciudad:</label> <span class="text-danger">*</span>
-        <select class="form-control btn-light f_user" name="city_id" id="city">
+        <select class="form-control f_user" name="city_id" id="city">
             @if(isset($user))
             @foreach ($cities as $city)
             <option

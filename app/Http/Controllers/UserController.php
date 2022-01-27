@@ -27,6 +27,7 @@ class UserController extends Controller
     function __construct()
     {
         $this->middleware('permission:user-list', ['only' => ['index']]);
+        $this->middleware('permission:user-show', ['only' => ['show']]);
         $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:user-delete', ['only' => ['destroy']]);
@@ -50,6 +51,8 @@ class UserController extends Controller
                     $table = datatables(User::with('roles')->where( 'setting_id', $setting)->get());
                 }
 
+            }elseif ($role == 'Asistente'){
+                $table = datatables(User::with('roles')->where( 'setting_id', $setting)->whereHas("roles", function($q){ $q->where("name", "Paciente"); })->get());
             }else{
                 $table = datatables(User::with('roles')->get());
             }
@@ -91,9 +94,15 @@ class UserController extends Controller
         $setting = Auth::User()->setting_id;
         if ($request->ajax()) {
             if ($role == 'Médico'){
-                $table = datatables(User::onlyTrashed()->where( 'setting_id', $setting)->get());
+                if(Auth::User()->setting_id == null){
+                    $table = datatables(User::onlyTrashed()->with('roles')->where( 'setting_id', $setting)->where( 'id', Auth::User()->id)->get());
+                }else{
+                    $table = datatables(User::onlyTrashed()->with('roles')->where( 'setting_id', $setting)->get());
+                }
+            }elseif ($role == 'Asistente'){
+                $table = datatables(User::onlyTrashed()->with('roles')->where( 'setting_id', $setting)->whereHas("roles", function($q){ $q->where("name", "Asistente"); })->get());
             }else{
-                $table = datatables(User::onlyTrashed()->get());
+                $table = datatables(User::onlyTrashed()->with('roles')->get());
             }
             return $table->addIndexColumn()
                 ->addColumn('role', function (User $user) {
@@ -125,7 +134,13 @@ class UserController extends Controller
      */
     public function create()
     {
-        $role = Auth::user()->getRoleNames()->first();
+        if(is_null(Auth::User()->setting_id) && Auth::user()->roles->first()->id != 1){
+            Alert::toast('Debes completar la información de la Clínica para poder crear usuarios', 'warning')->timerProgressBar();
+            return back();
+        }else{
+
+        $role = Auth::user()->roles->first()->id;
+
         $setting = Auth::User()->setting_id;
         $now = new \DateTime();
         if (!is_null(User::get()->last())) {
@@ -137,18 +152,23 @@ class UserController extends Controller
             $q->where('id', '3');
         })->where( 'setting_id', $setting)->get()->count();
 
-        if ($role == 'Médico'){
+        if ($role == 2){
             if($count_asistent < 2){
                 $roles = Role::where('id','>',2)->pluck('name', 'name')->all();
             }else{
                 $roles = Role::where('id','>',3)->pluck('name', 'name')->all();
             }
+        }elseif ($role == 3){
+                $roles = Role::where('id','=',4)->pluck('name', 'name')->all();
         }else{
             $roles = Role::where('id','=',2)->pluck('name', 'name')->all();
         }
         //dd($id);
         $countries= DB::table("countries")->where('phonecode','>',502)->where('phonecode','<',508)->get();
         return view('users.create', compact('ido','roles','countries','now'));
+
+        }
+
     }
     /**
      * Store a newly created resource in storage.
@@ -158,138 +178,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->roles == "Médico" || $request->roles == "Asistente" ){
-            $this->validate($request, [
-                'name1'         => 'required|max:25',
-                'name2'         => 'max:25',
-                'surname1'      => 'required|max:25',
-                'surname2'      => 'max:25',
-                'married_name'  => 'max:25',
-                'avatar'        => 'mimes:jpg,jpeg,gif,png,webp',
-                'email'         => 'required|email|max:50|unique:users,email',
-                'phone1'        => 'required|max:25',
-                'phone2'        => 'max:25',
-                'gender'        => 'required|in:M,F',
-                'civil'         => 'nullable|in:Single,Married',
-                'birth'         => 'nullable|before_or_equal:now',
-                'patient_code'  => 'required|max:25',
-                'document_type' => 'in:No document,ID number,Passport',
-                'document'      => 'max:25',
-                'status'        => 'in:active,disabled',
-                'name_relation' => 'max:50',
-                'kinship'       => 'in:No responsible,Spouse,Mother,Father,Partner,Son or Daughter  Aunt or Uncle,Cousin,Other',
-                'address'       => 'required|max:255',
-                'password'      => 'required|same:confirm-password',
-                'roles'         => 'required',
-                'country_id'    => 'required',
-                'state_id'      => 'required',
-                'city_id'       => 'required',
-                'setting_id'    => 'nullable',
-            ]);
-        }else{
-            $this->validate($request, [
-                'name1'         => 'required|max:25',
-                'name2'         => 'max:25',
-                'surname1'      => 'required|max:25',
-                'surname2'      => 'max:25',
-                'married_name'  => 'max:25',
-                'avatar'        => 'mimes:jpg,jpeg,gif,png,webp',
-                'email'         => 'required|email|max:50|unique:users,email',
-                'phone1'        => 'max:25',
-                'phone2'        => 'max:25',
-                'gender'        => 'required|in:M,F',
-                'civil'         => 'in:Single,Married',
-                'birth'         => 'required|before_or_equal:now',
-                'patient_code'  => 'required|max:25',
-                'document_type' => 'in:No document,ID number,Passport',
-                'document'      => 'max:25',
-                'status'        => 'in:active,disabled',
-                'name_relation' => 'max:50',
-                'kinship'       => 'in:No responsible,Spouse,Mother,Father,Partner,Son or Daughter  Aunt or Uncle,Cousin,Other',
-                'address'       => 'max:255',
-                'password'      => 'required|same:confirm-password',
-                'roles'         => 'required',
-                'country_id'    => 'required',
-                'state_id'      => 'required',
-                'city_id'       => 'required',
-                'setting_id'    => 'required',
-            ]);
-        }
-        if ($request->roles[0] == 'Paciente'){
-            $request['patient'] = true;
-        }else{
-            $request['patient'] = false;
-        }
-        //$request['setting_id'] = Auth::User()->setting_id;
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        //dd($input);
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
-        Alert::toast('Usuario creado', 'success')->timerProgressBar();
-        return redirect()->route('users.index');
-    }
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $user = User::find($id);
-        $users = User::withTrashed()->get();
-        $activities = Activity::where('causer_id', $id)->orderBy('id','DESC')->paginate('5');
-        if(Auth::User()->setting_id == $user->setting_id or Auth::User()->roles->first()->id == 1){
-            return view('users.show', compact('user','activities','users'));
-        }else{
-            return abort(403,"El usuario no puede realizar esta acción");
-        }
-    }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $user = User::find($id);
-        $role = Auth::user()->getRoleNames()->first();
-        $setting = Auth::User()->setting_id;
-        $now = new \DateTime();
-        $count_asistent = User::whereHas('roles', function ($q) {
-            $q->where('id', '3');
-        })->where( 'setting_id', $setting)->get()->count();
 
-        if ($role == 'Médico'){
-            if($count_asistent < 2){
-                $roles = Role::where('id','>',2)->pluck('name', 'name')->all();
-            }else{
-                $roles = Role::where('id','>',3)->pluck('name', 'name')->all();
-            }
-        }else{
-            $roles = Role::pluck('name', 'name')->all();
-        }
-        $userRole = $user->roles->pluck('name', 'name')->all();
-        $countries= DB::table("countries")->where('phonecode','>',502)->where('phonecode','<',508)->get();
-        $states= DB::table("states")->where('country_id','=',$user->country['id'])->get();
-        $cities= DB::table("cities")->where('state_id','=',$user->state['id'])->get();
-        if(Auth::User()->setting_id == $user->setting_id or Auth::User()->roles->first()->id == 1){
-            return view('users.edit', compact('user', 'roles', 'userRole','countries','states','cities','now'));
-        }else{
-            return abort(403,"El usuario no puede realizar esta acción");
-        }
-    }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
         if($request->roles == "Médico" || $request->roles == "Asistente" ){
             $this->validate($request, [
                 'name1'         => 'required|max:25',
@@ -298,13 +187,13 @@ class UserController extends Controller
                 'surname2'      => 'max:25',
                 'married_name'  => 'max:25',
                 'avatar'        => 'mimes:jpg,jpeg,gif,png,webp',
-                'email'         => 'required|email|max:25|unique:users,email,' . $id,
+                'email'         => 'max:50|unique:users,email',
                 'phone1'        => 'required|max:25',
                 'phone2'        => 'max:25',
                 'gender'        => 'required|in:M,F',
                 'civil'         => 'nullable|in:Single,Married',
                 'birth'         => 'nullable|before_or_equal:now',
-                'patient_code'  => 'required|max:25',
+                'patient_code'  => 'required|max:25|unique:users',
                 'document_type' => 'in:No document,ID number,Passport',
                 'document'      => 'max:25',
                 'status'        => 'in:active,disabled',
@@ -326,32 +215,180 @@ class UserController extends Controller
                 'surname2'      => 'max:25',
                 'married_name'  => 'max:25',
                 'avatar'        => 'mimes:jpg,jpeg,gif,png,webp',
-                'email'         => 'required|email|max:50|unique:users,email',
+                'email'         => 'max:50|unique:users',
                 'phone1'        => 'max:25',
                 'phone2'        => 'max:25',
                 'gender'        => 'required|in:M,F',
                 'civil'         => 'in:Single,Married',
                 'birth'         => 'required|before_or_equal:now',
-                'patient_code'  => 'required|max:25',
+                'patient_code'  => 'required|max:25|unique:users',
                 'document_type' => 'in:No document,ID number,Passport',
                 'document'      => 'max:25',
                 'status'        => 'in:active,disabled',
                 'name_relation' => 'max:50',
                 'kinship'       => 'in:No responsible,Spouse,Mother,Father,Partner,Son or Daughter  Aunt or Uncle,Cousin,Other',
                 'address'       => 'max:255',
-                'password'      => 'required|same:confirm-password',
+                'password'      => 'same:confirm-password',
                 'roles'         => 'required',
                 'country_id'    => 'required',
                 'state_id'      => 'required',
                 'city_id'       => 'required',
-                'setting_id'    => 'required',
+                'setting_id'    => 'nullable',
             ]);
         }
-        if ($request->roles[0] == 'Paciente'){
-            $request['patient'] = true;
+
+        $request['setting_id'] = Auth::User()->setting_id;
+
+        $input = $request->all();
+        $input['password'] = Hash::make($input['password']);
+        //dd($input);
+        $user = User::create($input);
+        $user->assignRole($request->input('roles'));
+        Alert::toast('Usuario creado', 'success')->timerProgressBar();
+        return redirect()->route('users.index');
+    }
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $user = User::find($id);
+        $users = User::withTrashed()->get();
+        $activities = Activity::where('causer_id', $id)->orderBy('id','DESC')->paginate('5');
+        if (Auth::User()->roles->first()->id == 4){
+            if(Auth::User()->id == $user->id){
+                return view('users.show', compact('user','activities','users'));
+            }else{
+                return abort(403,"El usuario no puede realizar esta acción");
+            }
         }else{
-            $request['patient'] = false;
+            if(Auth::User()->setting_id == $user->setting_id or Auth::User()->roles->first()->id == 1){
+                return view('users.show', compact('user','activities','users'));
+            }else{
+                return abort(403,"El usuario no puede realizar esta acción");
+            }
         }
+
+    }
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $user = User::find($id);
+        $role = Auth::user()->roles->first()->id;
+        $setting = Auth::User()->setting_id;
+        $now = new \DateTime();
+        $count_asistent = User::whereHas('roles', function ($q) {
+            $q->where('id', '3');
+        })->where( 'setting_id', $setting)->get()->count();
+
+        if ($role == 2){
+            if($count_asistent < 2){
+                $roles = Role::where('id','>',2)->pluck('name', 'name')->all();
+            }else{
+                $roles = Role::where('id','>',2)->pluck('name', 'name')->all();
+            }
+        }elseif ($role == 3){
+            $roles = Role::where('id','=',4)->pluck('name', 'name')->all();
+        }else{
+            $roles = Role::where('id','=',2)->pluck('name', 'name')->all();
+        }
+        $userRole = $user->roles->pluck('name', 'name')->all();
+        $countries= DB::table("countries")->where('phonecode','>',502)->where('phonecode','<',508)->get();
+        $states= DB::table("states")->where('country_id','=',$user->country['id'])->get();
+        $cities= DB::table("cities")->where('state_id','=',$user->state['id'])->get();
+
+        if (Auth::User()->roles->first()->id == 4){
+            if(Auth::User()->id == $user->id){
+                return view('users.edit', compact('user', 'roles', 'userRole','countries','states','cities','now'));
+            }else{
+                return abort(403,"El usuario no puede realizar esta acción");
+            }
+        }else{
+            if(Auth::User()->setting_id == $user->setting_id or Auth::User()->roles->first()->id == 1){
+                return view('users.edit', compact('user', 'roles', 'userRole','countries','states','cities','now'));
+            }else{
+                return abort(403,"El usuario no puede realizar esta acción");
+            }
+        }
+
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        if($request->roles == "Médico" || $request->roles == "Asistente" ){
+            $this->validate($request, [
+                'name1'         => 'required|max:25',
+                'name2'         => 'max:25',
+                'surname1'      => 'required|max:25',
+                'surname2'      => 'max:25',
+                'married_name'  => 'max:25',
+                'avatar'        => 'mimes:jpg,jpeg,gif,png,webp',
+                'email'         => 'email|max:50|unique:users,email,' . $id,
+                'phone1'        => 'required|max:25',
+                'phone2'        => 'max:25',
+                'gender'        => 'required|in:M,F',
+                'civil'         => 'nullable|in:Single,Married',
+                'birth'         => 'nullable|before_or_equal:now',
+                'patient_code'  => 'required|max:25|unique:users,patient_code,' . $id,
+                'document_type' => 'in:No document,ID number,Passport',
+                'document'      => 'max:25',
+                'status'        => 'in:active,disabled',
+                'name_relation' => 'max:50',
+                'kinship'       => 'in:No responsible,Spouse,Mother,Father,Partner,Son or Daughter  Aunt or Uncle,Cousin,Other',
+                'address'       => 'required|max:255',
+                'password'      => 'same:confirm-password',
+                'roles'         => 'required',
+                'country_id'    => 'required',
+                'state_id'      => 'required',
+                'city_id'       => 'required',
+                'setting_id'    => 'nullable',
+            ]);
+        }else{
+            $this->validate($request, [
+                'name1'         => 'required|max:25',
+                'name2'         => 'max:25',
+                'surname1'      => 'required|max:25',
+                'surname2'      => 'max:25',
+                'married_name'  => 'max:25',
+                'avatar'        => 'mimes:jpg,jpeg,gif,png,webp',
+                'email'         => 'email|max:50|unique:users,email,' . $id,
+                'phone1'        => 'max:25',
+                'phone2'        => 'max:25',
+                'gender'        => 'required|in:M,F',
+                'civil'         => 'in:Single,Married',
+                'birth'         => 'required|before_or_equal:now',
+                'patient_code'  => 'required|max:25|unique:users,patient_code,' . $id,
+                'document_type' => 'in:No document,ID number,Passport',
+                'document'      => 'max:25',
+                'status'        => 'in:active,disabled',
+                'name_relation' => 'max:50',
+                'kinship'       => 'in:No responsible,Spouse,Mother,Father,Partner,Son or Daughter  Aunt or Uncle,Cousin,Other',
+                'address'       => 'max:255',
+                'password'      => 'same:confirm-password',
+                'roles'         => 'required',
+                'country_id'    => 'required',
+                'state_id'      => 'required',
+                'city_id'       => 'required',
+                'setting_id'    => 'nullable',
+            ]);
+        }
+
+        $request['setting_id'] = Auth::User()->setting_id;
+
         $input = $request->all();
         if (!empty($input['password'])) {
             $input['password'] = Hash::make($input['password']);
@@ -390,15 +427,9 @@ class UserController extends Controller
     {
        $ids = explode(",", $request->ids);
 
-            $u = $user->get()->last();
-            $properties = json_decode('{"attributes":'. $u .'}');
-            foreach ($ids as &$id) {
-                User::withTrashed()->where('id', $id)->restore();
-                activity('user')
-                   ->causedBy(auth()->user())
-                   ->performedOn($user)
-                   ->withProperties($properties)
-                   ->log('Restaurado '.$u->name1.' '.$u->surname1);
+            foreach ($ids as $id) {
+                $u =  User::withTrashed()->find($id);
+                $u->restore();
             }
         return response()->json();
     }
@@ -406,10 +437,10 @@ class UserController extends Controller
     {
         $role = Auth::user()->getRoleNames()->first();
         $setting = Auth::User()->setting_id;
-        if ($role == 'Médico'){
-            $user = User::where( 'setting_id', $setting);
+        if ($role == 'Médico' or $role == 'Asistente'){
+            $user = User::where( 'setting_id', $setting)->whereHas("roles", function($q){ $q->where("name", "Paciente"); });
         }else{
-            $user = User::select( '*');
+            $user = User::select( '*')->whereHas("roles", function($q){ $q->where("name", "Paciente"); });
         }
         $users = $user->like($request->get('searchQuest'))->get();
         return json_encode($users);

@@ -22,8 +22,7 @@ class SettingController extends Controller
         $this->middleware('permission:setting-list', ['only' => ['index']]);
         $this->middleware('permission:setting-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:setting-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:setting-delete', ['only' => ['destroy']]);
-        $this->middleware('permission:setting-restore', ['only' => ['restore']]);
+
     }
     /**
      * Display a listing of the resource.
@@ -80,16 +79,6 @@ class SettingController extends Controller
         return redirect()->route('settings.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Setting  $setting
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Setting $setting)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -132,14 +121,4 @@ class SettingController extends Controller
         return redirect()->route('settings.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Setting  $setting
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Setting $setting)
-    {
-        //
-    }
 }

@@ -1,3 +1,9 @@
+<div id="ERROR_COPY" style="display:none">
+        @foreach ($errors->all() as $error)
+            <p style="text-align:left;"><i class="fas fa-arrow-right fa-fw text-danger"></i> {{ $error }}</p>
+        @endforeach
+</div>
+
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-6">
         <div class="form-group">

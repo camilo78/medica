@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('surname2', 25)->nullable();
             $table->string('married_name', 25)->nullable();
             $table->string('avatar')->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();;
             $table->string('phone1', 25)->nullable();
             $table->string('phone2', 25)->nullable();
             $table->enum('gender', ['M', 'F'])->nullable();
@@ -34,7 +34,7 @@ class CreateUsersTable extends Migration
             $table->string('name_relation', 50)->nullable();
             $table->enum('kinship', ['No responsible','Spouse', 'Mother','Father', 'Partner','Son or Daughter', 'Aunt or Uncle','Cousin','Other'])->nullable();
             $table->text('address')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->unsignedMediumInteger('country_id');
             $table->foreign('country_id')->references('id')->on('countries');
             $table->unsignedMediumInteger('state_id');

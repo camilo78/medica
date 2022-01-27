@@ -40,14 +40,15 @@
                 ],
                 ajax: "{{ route('users.trash') }}",
                 columns: [
+                        @can('user-restore')
+                    {data: 'choose', name: 'choose', orderable: false, searchable: false},
+                        @endcan
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                     {data: 'name', name: 'name'},
                     {data: 'email', name: 'email'},
                     {data: 'phone', name: 'phone'},
                     {data: 'role', name: 'role'},
-                        @can('user-restore')
-                    {data: 'choose', name: 'choose', orderable: false, searchable: false},
-                    @endcan
+
                 ],
             });
         });
@@ -160,14 +161,14 @@
                         <table id="data" class="table table-striped table-hover" width="100%">
                             <thead>
                             <tr>
-                                <th class="text-center" width="50px">N°</th>
-                                <th width="50px">Nombre</th>
-                                <th width="50px">Email</th>
-                                <th width="50px">Teléfono</th>
-                                <th width="50px">Rol</th>
                                 @can('user-restore')
-                                    <th class="text-center" width="50px"><i class="mdi mdi-checkbox-marked-outline"></i></th>
+                                    <th class="text-center" width="30px"><i class="mdi mdi-checkbox-marked-outline"></i></th>
                                 @endcan
+                                <th class="text-center" width="30px">N°</th>
+                                <th width="30px">Nombre</th>
+                                <th width="30px">Email</th>
+                                <th width="30px">Teléfono</th>
+                                <th width="30px">Rol</th>
                             </tr>
                             </thead>
                             <tbody>

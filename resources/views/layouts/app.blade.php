@@ -181,6 +181,25 @@
                         $('#dynamic').append(row);
                     });
                 },
+                error: function (jqXHR, exception) {
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Sin conexión.\n Verifica tu red.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Recurso no encontrado. [404]';
+                    } else if (jqXHR.status == 500) {
+                        msg = 'Error del servidor [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'El análisis JSON solicitado falló.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Error de tiempo de espera.';
+                    } else if (exception === 'abort') {
+                        msg = 'Solicitud de Ajax abortada.';
+                    } else {
+                        msg = 'Error no detectado.\n' + jqXHR.responseText;
+                    }
+                    $('#dynamic').html('');
+                },
             })
         }
 

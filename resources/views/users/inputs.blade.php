@@ -1,3 +1,8 @@
+<div id="ERROR_COPY" style="display:none">
+        @foreach ($errors->all() as $error)
+            <p style="text-align:left;"><i class="fas fa-arrow-right fa-fw text-danger"></i> {{ $error }}</p>
+        @endforeach
+</div>
 <div class="col-lg-10">
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-3">
@@ -81,7 +86,7 @@
                 @endif
             </div>
         </div>
-        <div class="col-xs-12 col-sm-4 col-md-4 h-patient" >
+        <div class="col-xs-12 col-sm-4 col-md-4" >
             <div class="form-group">
                 <label>Email:</label> <span class="text-danger">*</span>
                 {!! Form::text('email', null, array('class' => 'form-control')) !!}
@@ -90,7 +95,7 @@
                 @endif
             </div>
         </div>
-        <div class="col-xs-12 col-sm-4 col-md-4 h-patient" >
+        <div class="col-xs-12 col-sm-4 col-md-4" style="border: dashed 1px #AED6F1" >
             <div class="form-group">
                 <label>Clave:</label>
                 @if(Route::current()->getName() == 'users.create')
@@ -102,7 +107,7 @@
                 @endif
             </div>
         </div>
-        <div class="col-xs-12 col-sm-4 col-md-4 h-patient" >
+        <div class="col-xs-12 col-sm-4 col-md-4" style="border: dashed 1px #AED6F1">
             <div class="form-group">
                 <label>Confirme Clave:</label>
                 @if(Route::current()->getName() == 'users.create')
@@ -114,15 +119,22 @@
                 @endif
             </div>
         </div>
+        <div class="col-lg-12 mb-2">
+            @if( Route::currentRouteName() == route('users.create'))
+                <small class="text-primary d-flex justify-content-end">* Utiliza estos campos solo si quieres crear una contraseña.</small>
+            @else
+                <small class="text-primary d-flex justify-content-end">* Utiliza estos campos solo si quieres editar la contraseña.</small>
+            @endif
+        </div>
     </div>
 </div>
 </div>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist" style="border: none">
-        <a class="nav-link nav-link-user active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-           aria-controls="nav-home" aria-selected="true">Datos Generales</a>
-        <a class="nav-link nav-link-user" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-           aria-controls="nav-contact" aria-selected="false">Datos de Contacto</a>
+        {{-- <a class="nav-link nav-link-user active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+           aria-controls="nav-home" aria-selected="true">Datos Complementarios</a> --}}
+        {{-- <a class="nav-link nav-link-user" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+           aria-controls="nav-contact" aria-selected="false">Datos de Contacto</a> --}}
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
@@ -130,16 +142,17 @@
         <div class="col-lg-12 p-4">
             <div class="row">
                 @include('users.general')
-            </div>
-        </div>
-    </div>
-    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-        <div class="col-lg-12 p-4">
-            <div class="row">
                 @include('users.contact')
             </div>
         </div>
     </div>
+    {{-- <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+        <div class="col-lg-12 p-4">
+            <div class="row">
+
+            </div>
+        </div>
+    </div> --}}
 </div>
 <div class="row mt-4">
     <div class="col-xs-12 col-sm-12 col-md-6">

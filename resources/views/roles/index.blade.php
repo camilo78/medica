@@ -51,6 +51,11 @@
                 serverSide: true,
                 ajax: "{{ route('roles.index') }}",
                 columns: [
+                        @can('role-delete')
+                    {
+                        data: 'choose', name: 'choose', orderable: false, searchable: false
+                    },
+                        @endcan
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                     {data: 'name', name: 'name'},
                         @can('role-edit')
@@ -58,11 +63,7 @@
                         data: 'edit', name: 'edit', orderable: false, searchable: false
                     },
                         @endcan
-                        @can('role-delete')
-                    {
-                        data: 'choose', name: 'choose', orderable: false, searchable: false
-                    },
-                    @endcan
+
                 ]
             });
         });
@@ -173,14 +174,14 @@
                         <table id="data" class="table table-striped table-hover m-auto" width="30%">
                             <thead>
                             <tr>
-                                <th class="text-center" width="50px">N°</th>
+                                @can('role-delete')
+                                    <th width="50px"><i class="mdi mdi-checkbox-marked-outline"></i>
+                                    </th>
+                                @endcan
+                                <th width="50px">N°</th>
                                 <th>Nombre</th>
                                 @can('role-edit')
                                     <th class="text-center" width="50px">Editar</th>
-                                @endcan
-                                @can('role-delete')
-                                    <th class="text-center" width="50px"><i class="mdi mdi-checkbox-marked-outline"></i>
-                                    </th>
                                 @endcan
                             </tr>
                             </thead>

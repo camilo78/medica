@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\Models\Activity;
 
 class LoginController extends Controller
 {
@@ -36,17 +38,34 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        //$this->middleware('guest')->except('logout');
     }
 
     public function redirectPath()
     {
-        if (Auth::user()->getRoleNames()->first() == 'Paciente') {
-            return '/patient';
+        $user  =  User::find(Auth::user()->id);
+        $properties = json_decode('{"attributes":'. $user .'}');
+        activity('user')
+            ->causedBy(Auth::User()->id)
+            ->performedOn($user)
+            ->log('Ingresó al sistema');
+        if ($user->getRoleNames()->first() == 'Paciente') {
+            return '/users/' . Auth::User()->id;
+        }elseif ($user->getRoleNames()->first() == 'Asistente') {
+            return '/users';
+        }else{
+            return '/home';
         }
 
-        return '/home';
     }
-
-
+    public function logout(){
+        $user  =  User::find(Auth::user()->id);
+        $properties = json_decode('{"attributes":'. $user .'}');
+        activity('user')
+            ->causedBy(Auth::User()->id)
+            ->performedOn($user)
+            ->log('Salió del sistema');
+        Auth::logout();
+        return view('welcome');
+    }
 }

@@ -88,14 +88,30 @@
                                 <div class="panel-body">
                                     <hr>
                                     <div class="text-left">
-                                        <p class="text-muted font-13"><strong>Full Name :</strong> <span class="m-l-15">{{ $user->name1 .' '.$user->name2.' '.$user->surname1 .' '.$user->surname2}}</span></p>
-                                        <p class="text-muted font-13"><strong>Rol :</strong> <span class="m-l-15">{{$user->getRoleNames()->first()}}</span></p>
-                                        <p class="text-muted font-13"><strong>Mobile :</strong><span class="m-l-15"><a href="tel:{{$user->phone1}}"> {{$user->phone1}}</a></span></p>
-                                        <p class="text-muted font-13"><strong>Email :</strong> <span class="m-l-15"><a href = "mailto: {{$user->email}}"> {{$user->email}}</a></span></p>
-                                        <p class="text-muted font-13"><strong>Pais :</strong> <span class="m-l-15">{{ $user->country['name'].' '.$user->country['emoji'] }}</span></p>
-                                        <p class="text-muted font-13"><strong>Estado, Departamento :</strong> <span class="m-l-15">{{ str_replace('Department','',$user->state['name']) }}</span></p>
-                                        <p class="text-muted font-13"><strong>Ciudad :</strong> <span class="m-l-15">{{ $user->city['name'] }}</span></p>
-                                        <p class="text-muted font-13"><strong>Dirección :<br></strong> <span class="m-l-5">{{$user->address}}</span></p>
+                                        <p class="text-muted font-13"><strong>Nombre Completo:</strong> <span class="m-l-15">{{ $user->name1 .' '.$user->name2.' '.$user->surname1 .' '.$user->surname2}}</span></p>
+                                        <p class="text-muted font-13"><strong>Rol:</strong> <span class="m-l-15">{{$user->getRoleNames()->first()}}</span></p>
+                                        </p>
+                                        @if(is_null($user->setting))
+                                        <p class="text-muted font-13"><strong>
+                                        Clínca:</strong> <span class="m-l-15 text-warning">Sin clínica</span> <span class="badge badge-pill badge-warning">
+                                            @if(Auth::user()->getRoleNames()->first() == 'Médico')<a href="{{route('users.edit',$user->id)}}">Agregar</a>@else Agregar @endif
+                                        </span>
+                                        </p>
+                                        @else
+                                        <p class="text-muted font-13"><strong>
+                                        Clínca:</strong> <span class="m-l-15">{{$user->setting->name}}</span></p>
+                                        @endif
+                                        <p class="text-muted font-13"><strong>
+                                        Teléfonos:</strong><span class="m-l-15"><a href="tel:{{$user->phone1}}"> {{$user->phone1}}</a></span></p>
+                                        @if(is_null($user->email))
+                                        <p class="text-muted font-13"><strong>Email:</strong> <span class="m-l-15 text-warning">Sin Email</span> <span class="badge badge-pill badge-warning"><a href="{{route('users.edit',$user->id)}}">Agregar</a></span></p>
+                                        @else
+                                        <p class="text-muted font-13"><strong>Email:</strong> <span class="m-l-15"><a href = "mailto: {{$user->email}}"> {{$user->email}}</a></span></p>
+                                        @endif
+                                        <p class="text-muted font-13"><strong>Pais:</strong> <span class="m-l-15">{{ $user->country['name'].' '.$user->country['emoji'] }}</span></p>
+                                        <p class="text-muted font-13"><strong>Departamento:</strong> <span class="m-l-15">{{ str_replace('Department','',$user->state['name']) }}</span></p>
+                                        <p class="text-muted font-13"><strong>Ciudad:</strong> <span class="m-l-15">{{ $user->city['name'] }}</span></p>
+                                        <p class="text-muted font-13"><strong>Dirección:</strong> <span class="m-l-5">{{$user->address}}</span></p>
                                     </div>
                                     <ul class="social-links list-inline mt-4 mb-0">
                                         <li class="list-inline-item"><a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Facebook"><i class="fa fa-facebook"></i></a></li>

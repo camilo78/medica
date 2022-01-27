@@ -3,7 +3,29 @@
 
 @stop
 @section('js')
+<script type="text/javascript">
+    const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              showCloseButton: true,
+              timer: 5000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+        })
 
+        var has_errors = {{ $errors->count() > 0 ? 'true' : 'false'}};
+        if(has_errors){
+            Toast.fire({
+                title: 'Errores del Formulario',
+                icon: 'error',
+                html:jQuery("#ERROR_COPY").html(),
+            })
+        }
+</script>
 @stop
 @section('title')
     <div class="row">
@@ -29,6 +51,11 @@
     </div>
 @stop
 @section('content')
+<div id="ERROR_COPY" style="display:none">
+        @foreach ($errors->all() as $error)
+            <p style="text-align:left;"><i class="fas fa-arrow-right fa-fw text-danger"></i> {{ $error }}</p>
+        @endforeach
+</div>
     <div class="row">
         <div class="col-md-12 stretch-card">
             <div class="card">

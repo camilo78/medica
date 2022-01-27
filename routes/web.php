@@ -27,7 +27,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-
+Route::get('logout','LoginController@logout')->name('logout');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware(['role:Admin|Médico']);
